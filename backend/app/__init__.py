@@ -1,0 +1,3 @@
+"""
+SchemeSaathi Backend Application Package.
+"""

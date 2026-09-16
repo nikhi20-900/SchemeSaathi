@@ -1,71 +1,218 @@
-# SchemeSaathi – AI Government Scheme Navigator
+# SchemeSaathi 🇮🇳
+## AI-Powered Government Scheme Navigator (Phase 1: Scaffolding)
 
-Hackathon MVP: help students discover, understand, and verify eligibility for government education schemes with grounded AI, a deterministic rules engine, and document verification.
+SchemeSaathi is an AI-powered Government Scheme Navigator for Indian citizens, initially focusing on scholarships and education schemes across Karnataka and the Central Government.
 
-**Repository:** https://github.com/nikhi20-900/SchemeSaathi  
-**Project board:** see the **SchemeSaathi – Hackathon** GitHub Project on this account.
+> **CURRENT STATUS: PHASE 1 — REPOSITORY SCAFFOLDING ONLY**  
+> All modules, directories, and placeholder interfaces are established so that all 4 team members can work independently on their feature branches.
 
-## Team (4 subsystems)
+---
 
-| Role | Branch | Placeholder GitHub username |
-| --- | --- | --- |
-| AI / RAG Engineer | `feature/ai-rag` | `YOUR_USERNAME_1` |
-| Eligibility / Rules Engine Engineer | `feature/eligibility-engine` | `YOUR_USERNAME_2` |
-| OCR / Document Intelligence Engineer | `feature/ocr-documents` | `YOUR_USERNAME_3` |
-| Frontend / Integration Engineer | `feature/frontend` | `YOUR_USERNAME_4` |
-
-Replace the placeholder usernames with real GitHub handles, then assign the matching issue.
-
-## Development dependency (MVP)
-
-All four issues are **priority-high**. Work in parallel with mocks where needed.
+## 👥 4-Member Team Structure & Ownership
 
 ```text
-Member 1
-RAG + Scheme Data
-      │
-      ├──────────────┐
-      ▼              ▼
-Member 2          Member 3
-Eligibility       OCR
-      │              │
-      └──────┬───────┘
-             ▼
-          Member 4
-       Frontend Integration
+                    MEMBER 1
+                 AI + RAG + DATA
+                       │
+              ┌────────┴────────┐
+              ▼                 ▼
+          MEMBER 2          MEMBER 3
+        ELIGIBILITY             OCR
+          ENGINE             DOCUMENTS
+              │                 │
+              └────────┬────────┘
+                       ▼
+                    MEMBER 4
+             FRONTEND + INTEGRATION
 ```
 
-## Git workflow
+### Module Ownership Matrix
 
-Never commit directly to `main`. Each issue ships as a pull request from its feature branch.
+| Member | Focus Area | Branch | Owned Directories & Files |
+|---|---|---|---|
+| **Member 1** | AI + RAG + Data | `feature/ai-rag` | `backend/app/rag/`<br>`backend/app/services/llm_service.py`<br>`backend/app/services/rag_service.py`<br>`data/schemes/` |
+| **Member 2** | Eligibility Engine | `feature/eligibility-engine` | `backend/app/eligibility/`<br>`backend/app/services/eligibility_service.py`<br>`backend/app/api/eligibility.py` |
+| **Member 3** | OCR + Documents | `feature/ocr-documents` | `backend/app/ocr/`<br>`backend/app/services/ocr_service.py`<br>`backend/app/services/document_service.py`<br>`backend/app/api/documents.py`<br>`data/sample/` |
+| **Member 4** | Frontend + Integration | `feature/frontend` | `frontend/`<br>`backend/app/api/`<br>`frontend/src/services/api.ts` |
 
-PR title format:
+---
+
+## 🔒 Core Architectural Principle
 
 ```text
-feat: implement [component]
+┌────────────────────────────────────────────────────────────────────────┐
+│  🔒 THE LLM DOES NOT INDEPENDENTLY DETERMINE CITIZEN ELIGIBILITY.       │
+│                                                                        │
+│  Eligibility criteria (income limits, age, state domicile, categories) │
+│  are evaluated deterministically by the Rules Engine against published │
+│  official government rules. The LLM only handles natural language      │
+│  understanding, multilingual communication, and evidence explanation.  │
+└────────────────────────────────────────────────────────────────────────┘
 ```
 
-Each PR must include:
+---
 
-- What was implemented
-- Screenshots if UI-related
-- API examples if backend-related
-- Tests
-- Known limitations
-- Related GitHub issue
+## 📁 Repository Structure
 
-## Definition of Done
+```text
+schemesaathi/
+│
+├── README.md
+├── .gitignore
+├── .env.example
+├── docker-compose.yml
+│
+├── frontend/
+│   ├── package.json
+│   ├── vite.config.ts
+│   ├── tsconfig.json
+│   ├── index.html
+│   │
+│   └── src/
+│       ├── main.tsx
+│       ├── App.tsx
+│       │
+│       ├── components/
+│       │   ├── ui/
+│       │   ├── Navbar.tsx
+│       │   ├── SchemeCard.tsx
+│       │   ├── EligibilityBadge.tsx
+│       │   ├── DocumentCard.tsx
+│       │   ├── EvidenceCard.tsx
+│       │   └── LoadingState.tsx
+│       │
+│       ├── pages/
+│       │   ├── Home.tsx
+│       │   ├── Profile.tsx
+│       │   ├── Schemes.tsx
+│       │   ├── SchemeDetails.tsx
+│       │   ├── Assistant.tsx
+│       │   ├── Documents.tsx
+│       │   └── Results.tsx
+│       │
+│       ├── hooks/
+│       ├── services/
+│       │   └── api.ts
+│       ├── types/
+│       └── utils/
+│
+├── backend/
+│   ├── requirements.txt
+│   │
+│   ├── app/
+│   │   ├── __init__.py
+│   │   ├── main.py
+│   │
+│   │   ├── api/
+│   │   │   ├── __init__.py
+│   │   │   ├── profile.py
+│   │   │   ├── schemes.py
+│   │   │   ├── assistant.py
+│   │   │   ├── eligibility.py
+│   │   │   ├── documents.py
+│   │   │   └── demo.py
+│   │
+│   │   ├── models/
+│   │   │   ├── __init__.py
+│   │   │   ├── user.py
+│   │   │   ├── scheme.py
+│   │   │   ├── eligibility.py
+│   │   │   ├── document.py
+│   │   │   └── evidence.py
+│   │
+│   │   ├── schemas/
+│   │   │   ├── __init__.py
+│   │   │   ├── user.py
+│   │   │   ├── scheme.py
+│   │   │   ├── eligibility.py
+│   │   │   └── document.py
+│   │
+│   │   ├── services/
+│   │   │   ├── __init__.py
+│   │   │   ├── llm_service.py
+│   │   │   ├── rag_service.py
+│   │   │   ├── eligibility_service.py
+│   │   │   ├── ocr_service.py
+│   │   │   └── document_service.py
+│   │
+│   │   ├── rag/
+│   │   │   ├── __init__.py
+│   │   │   ├── ingestion.py
+│   │   │   ├── chunking.py
+│   │   │   ├── embeddings.py
+│   │   │   └── retrieval.py
+│   │
+│   │   ├── eligibility/
+│   │   │   ├── __init__.py
+│   │   │   ├── engine.py
+│   │   │   ├── operators.py
+│   │   │   └── validators.py
+│   │
+│   │   ├── ocr/
+│   │   │   ├── __init__.py
+│   │   │   ├── extractor.py
+│   │   │   ├── classifier.py
+│   │   │   └── parser.py
+│   │
+│   │   ├── database/
+│   │   │   ├── __init__.py
+│   │   │   ├── connection.py
+│   │   │   └── seed.py
+│   │
+│   │   └── core/
+│   │       ├── __init__.py
+│   │       ├── config.py
+│   │       └── security.py
+│   │
+│   └── tests/
+│       ├── __init__.py
+│       ├── test_eligibility.py
+│       ├── test_rag.py
+│       └── test_documents.py
+│
+├── data/
+│   ├── schemes/
+│   └── sample/
+│
+└── docs/
+    ├── architecture.md
+    ├── api.md
+    └── demo.md
+```
 
-An issue is **Done** only when:
+---
 
-- Code is implemented
-- Tests pass
-- Documentation is updated
-- No secrets/API keys are committed
-- Code is pushed to the correct branch
-- Pull Request is created
-- PR is reviewed
-- PR is merged into `main`
-- GitHub issue is closed
+## 🌿 Git Branches
 
-Do not close issues merely because coding has started.
+```text
+main
+│
+├── feature/ai-rag             (Member 1)
+├── feature/eligibility-engine (Member 2)
+├── feature/ocr-documents      (Member 3)
+└── feature/frontend           (Member 4)
+```
+
+Rules:
+- Never commit directly to `main`.
+- Each member works exclusively in their feature branch.
+- Merge via pull requests after review.
+
+---
+
+## 🚦 Phase Checklist
+
+- [x] Repository structure created
+- [x] Frontend structure and placeholder pages/components created
+- [x] Backend structure and placeholder modules created
+- [x] API routes created with placeholder contracts
+- [x] RAG module scaffolding created
+- [x] Eligibility module scaffolding created
+- [x] OCR module scaffolding created
+- [x] Database module scaffolding created
+- [x] Test directories created
+- [x] Data directories created
+- [x] Documentation created (`docs/architecture.md`, `docs/api.md`, `docs/demo.md`)
+- [x] `.env.example` created
+- [x] `.gitignore` created
+- [x] `docker-compose.yml` created
