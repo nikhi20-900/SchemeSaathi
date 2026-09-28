@@ -1,13 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Sparkles, 
-  ArrowRight, 
   RotateCcw, 
-  CheckCircle2, 
-  ShieldCheck, 
-  Info,
-  ChevronRight
+  ShieldCheck
 } from 'lucide-react';
 import { Navbar } from './components/Navbar';
 import Home from './pages/Home';
@@ -18,7 +13,7 @@ import Assistant from './pages/Assistant';
 import Documents from './pages/Documents';
 import Results from './pages/Results';
 import Evidence from './pages/Evidence';
-import { MOCK_PROFILE, MOCK_SCHEMES } from './services/api';
+import { MOCK_PROFILE } from './services/api';
 import { evaluateAllSchemes } from './utils/engine';
 import type { PageId, UserProfile, SchemeEligibilityResult } from './types';
 

@@ -3,29 +3,22 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   CheckCircle2, 
   AlertTriangle, 
-  XCircle, 
   ChevronDown, 
   ChevronUp, 
   FileCheck, 
   ArrowRight, 
   RotateCw, 
   User, 
-  FileText, 
-  ExternalLink,
   ShieldCheck,
-  Building2,
-  MapPin,
   Filter
 } from 'lucide-react';
 import { EligibilityBadge } from '../components/EligibilityBadge';
-import { EvidenceCard } from '../components/EvidenceCard';
 import { LoadingState } from '../components/LoadingState';
 import type { 
   SchemeEligibilityResult, 
   UserProfile, 
   PageId, 
-  OverallStatus, 
-  CriterionResult 
+  OverallStatus 
 } from '../types';
 
 interface ResultsProps {
