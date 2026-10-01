@@ -1,46 +1,38 @@
-"""
-Citizen Profile API Routes.
-Owned by: Member 4 / Integration
-"""
+"""Citizen profile API routes backed by SQLAlchemy."""
 
 from fastapi import APIRouter, Depends
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.database.connection import get_db
-from app.models.profile import UserProfile
+from app.models import UserProfile
 from app.schemas.user import UserProfileCreate, UserProfileResponse
 
 router = APIRouter(prefix="/profile", tags=["profile"])
 
 
-def _get_or_create_profile(db: Session) -> UserProfile:
-    profile = db.query(UserProfile).order_by(UserProfile.id.asc()).first()
-    if profile is not None:
-        return profile
-
-    profile = UserProfile()
-    db.add(profile)
-    db.commit()
-    db.refresh(profile)
+@router.get("", response_model=UserProfileResponse)
+@router.get("/", response_model=UserProfileResponse, include_in_schema=False)
+def get_profile(db: Session = Depends(get_db)):
+    profile = db.execute(select(UserProfile).order_by(UserProfile.id.asc())).scalar_one_or_none()
+    if profile is None:
+        profile = UserProfile(**UserProfileCreate().model_dump())
+        db.add(profile)
+        db.commit()
+        db.refresh(profile)
     return profile
 
 
-@router.get("")
-def get_profile(db: Session = Depends(get_db)) -> UserProfileResponse:
-    return _get_or_create_profile(db)
-
-
-@router.post("")
-def update_profile(
-    profile_data: UserProfileCreate, db: Session = Depends(get_db)
-) -> UserProfileResponse:
-    profile = db.query(UserProfile).order_by(UserProfile.id.asc()).first()
+@router.post("", response_model=UserProfileResponse)
+@router.post("/", response_model=UserProfileResponse, include_in_schema=False)
+def update_profile(profile_data: UserProfileCreate, db: Session = Depends(get_db)):
+    profile = db.execute(select(UserProfile).order_by(UserProfile.id.asc())).scalar_one_or_none()
     if profile is None:
-        profile = UserProfile()
+        profile = UserProfile(**profile_data.model_dump())
         db.add(profile)
-
-    for field, value in profile_data.model_dump().items():
-        setattr(profile, field, value)
+    else:
+        for key, value in profile_data.model_dump().items():
+            setattr(profile, key, value)
 
     db.commit()
     db.refresh(profile)

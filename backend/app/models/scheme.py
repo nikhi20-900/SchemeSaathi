@@ -1,20 +1,25 @@
-"""
-Government Scheme Database Model.
-Managed by: Member 1 / AI & Data
+"""Government scheme database model."""
 
-Future responsibility:
-SQLAlchemy model representing the government scheme table:
-- id
-- name
-- description
-- department
-- state
-- benefits
-- source_url
-- source_title
-- last_verified
-"""
+from sqlalchemy import Column, String, Text
+from sqlalchemy.orm import relationship
 
-class Scheme:
-    """Placeholder Scheme model."""
-    pass
+from app.database.connection import Base
+
+
+class Scheme(Base):
+    __tablename__ = "schemes"
+
+    id = Column(String, primary_key=True, index=True)
+    name = Column(String, nullable=False)
+    department = Column(String, nullable=True)
+    state = Column(String, nullable=True)
+    description = Column(Text, nullable=True)
+    benefits = Column(Text, nullable=True)
+
+    eligibility_rules = relationship(
+        "EligibilityRule",
+        back_populates="scheme",
+        cascade="all, delete-orphan",
+    )
+    documents = relationship("Document", back_populates="scheme")
+    evidence_records = relationship("Evidence", back_populates="scheme")

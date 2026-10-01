@@ -1,13 +1,9 @@
-"""
-User and Profile Pydantic Schemas.
-Managed by: Member 4 / Integration
+"""User and profile Pydantic schemas."""
 
-Future responsibility:
-Pydantic models for user profile creation, updating, and responses.
-"""
+from typing import Optional, Union
 
-from typing import Optional
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
+
 
 class UserProfileBase(BaseModel):
     name: str = "Nikhil Kumar"
@@ -20,10 +16,12 @@ class UserProfileBase(BaseModel):
     student_status: bool = True
     category: str = "2A"
 
+
 class UserProfileCreate(UserProfileBase):
     pass
 
-class UserProfileResponse(UserProfileBase):
-    id: Optional[str] = "user-1"
 
-    model_config = {"from_attributes": True}
+class UserProfileResponse(UserProfileBase):
+    id: Optional[Union[int, str]] = None
+
+    model_config = ConfigDict(from_attributes=True)
