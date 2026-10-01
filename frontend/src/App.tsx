@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  RotateCcw, 
+import {
+  RotateCcw,
   ShieldCheck
 } from 'lucide-react';
 import { Navbar } from './components/Navbar';
@@ -13,7 +13,8 @@ import Assistant from './pages/Assistant';
 import Documents from './pages/Documents';
 import Results from './pages/Results';
 import Evidence from './pages/Evidence';
-import { checkEligibility, MOCK_PROFILE } from './services/api';
+import { MOCK_PROFILE } from './services/api';
+import { evaluateAllSchemes } from './utils/engine';
 import type { PageId, UserProfile, SchemeEligibilityResult } from './types';
 
 export const App: React.FC = () => {
@@ -23,6 +24,27 @@ export const App: React.FC = () => {
   const [isEvaluating, setIsEvaluating] = useState<boolean>(false);
   const [evaluationResults, setEvaluationResults] = useState<SchemeEligibilityResult[]>([]);
   const [showDemoBar, setShowDemoBar] = useState<boolean>(true);
+
+  useEffect(() => {
+    let active = true;
+
+    const loadProfile = async () => {
+      try {
+        const profile = await fetchProfile();
+        if (!active) return;
+        setUserProfile(profile);
+        runEvaluation(profile);
+      } catch (error) {
+        console.error('Failed to fetch profile from backend:', error);
+      }
+    };
+
+    loadProfile();
+
+    return () => {
+      active = false;
+    };
+  }, []);
 
   // Re-run evaluation whenever userProfile changes
   const runEvaluation = async (profileToEvaluate: UserProfile = userProfile) => {
@@ -53,9 +75,10 @@ export const App: React.FC = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleSaveProfile = (newProfile: UserProfile) => {
-    setUserProfile(newProfile);
-    runEvaluation(newProfile);
+  const handleSaveProfile = async (newProfile: UserProfile) => {
+    const savedProfile = await saveProfile(newProfile);
+    setUserProfile(savedProfile);
+    runEvaluation(savedProfile);
   };
 
   const handleUpdateProfile = (updatedFields: Partial<UserProfile>) => {
@@ -108,11 +131,10 @@ export const App: React.FC = () => {
                   <button
                     key={step.id}
                     onClick={() => handleNavigate(step.id)}
-                    className={`px-2.5 py-1 rounded-md text-[11px] font-medium whitespace-nowrap transition-all ${
-                      isActive
+                    className={`px-2.5 py-1 rounded-md text-[11px] font-medium whitespace-nowrap transition-all ${isActive
                         ? 'bg-terracotta-500 text-white font-bold shadow-sm'
                         : 'text-white/70 hover:text-white hover:bg-charcoal-800'
-                    }`}
+                      }`}
                   >
                     {step.label}
                   </button>

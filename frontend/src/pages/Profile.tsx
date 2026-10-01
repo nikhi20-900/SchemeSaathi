@@ -1,12 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Save, User, GraduationCap, IndianRupee, MapPin } from 'lucide-react';
 import type { UserProfile, PageId } from '../types';
-import { MOCK_PROFILE } from '../services/api';
 
 interface ProfileProps {
   profile: UserProfile;
-  onSave: (profile: UserProfile) => void;
+  onSave: (profile: UserProfile) => Promise<void> | void;
   onNavigate: (page: PageId) => void;
 }
 
@@ -24,17 +23,29 @@ const EDUCATION_LEVELS = ['Below 10th', '10th Pass', '12th Pass', 'Diploma', 'Un
 export default function Profile({ profile, onSave, onNavigate }: ProfileProps) {
   const [form, setForm] = useState<UserProfile>({ ...profile });
   const [saved, setSaved] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
+
+  useEffect(() => {
+    setForm({ ...profile });
+  }, [profile]);
 
   const handleChange = (field: string, value: any) => {
     setForm(prev => ({ ...prev, [field]: value }));
     setSaved(false);
+    setSaveError(null);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onSave(form);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
+    setSaveError(null);
+    try {
+      await Promise.resolve(onSave(form));
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2000);
+    } catch {
+      setSaved(false);
+      setSaveError('Could not save profile. Please try again.');
+    }
   };
 
   return (
@@ -198,6 +209,7 @@ export default function Profile({ profile, onSave, onNavigate }: ProfileProps) {
                 ✓ Saved
               </motion.span>
             )}
+            {saveError && <span className="text-red-600 text-sm font-medium">{saveError}</span>}
           </div>
         </form>
       </motion.div>
