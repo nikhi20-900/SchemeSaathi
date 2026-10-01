@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  RotateCcw, 
+import {
+  RotateCcw,
   ShieldCheck
 } from 'lucide-react';
 import { Navbar } from './components/Navbar';
@@ -13,7 +13,7 @@ import Assistant from './pages/Assistant';
 import Documents from './pages/Documents';
 import Results from './pages/Results';
 import Evidence from './pages/Evidence';
-import { fetchProfile, MOCK_PROFILE, saveProfile } from './services/api';
+import { MOCK_PROFILE } from './services/api';
 import { evaluateAllSchemes } from './utils/engine';
 import type { PageId, UserProfile, SchemeEligibilityResult } from './types';
 
@@ -22,9 +22,7 @@ export const App: React.FC = () => {
   const [selectedSchemeId, setSelectedSchemeId] = useState<string>('KA-SCHOLARSHIP-001');
   const [userProfile, setUserProfile] = useState<UserProfile>(MOCK_PROFILE);
   const [isEvaluating, setIsEvaluating] = useState<boolean>(false);
-  const [evaluationResults, setEvaluationResults] = useState<SchemeEligibilityResult[]>(() => {
-    return evaluateAllSchemes(MOCK_PROFILE);
-  });
+  const [evaluationResults, setEvaluationResults] = useState<SchemeEligibilityResult[]>([]);
   const [showDemoBar, setShowDemoBar] = useState<boolean>(true);
 
   useEffect(() => {
@@ -49,14 +47,22 @@ export const App: React.FC = () => {
   }, []);
 
   // Re-run evaluation whenever userProfile changes
-  const runEvaluation = (profileToEvaluate: UserProfile = userProfile) => {
+  const runEvaluation = async (profileToEvaluate: UserProfile = userProfile) => {
     setIsEvaluating(true);
-    setTimeout(() => {
-      const results = evaluateAllSchemes(profileToEvaluate);
-      setEvaluationResults(results);
+    try {
+      const response = await checkEligibility(profileToEvaluate);
+      setEvaluationResults(response.results || []);
+    } catch (error) {
+      console.error('Eligibility check failed:', error);
+      setEvaluationResults([]);
+    } finally {
       setIsEvaluating(false);
-    }, 400);
+    }
   };
+
+  useEffect(() => {
+    runEvaluation(MOCK_PROFILE);
+  }, []);
 
   const handleNavigate = (page: PageId, data?: any) => {
     if (page === 'scheme-details') {
@@ -125,11 +131,10 @@ export const App: React.FC = () => {
                   <button
                     key={step.id}
                     onClick={() => handleNavigate(step.id)}
-                    className={`px-2.5 py-1 rounded-md text-[11px] font-medium whitespace-nowrap transition-all ${
-                      isActive
+                    className={`px-2.5 py-1 rounded-md text-[11px] font-medium whitespace-nowrap transition-all ${isActive
                         ? 'bg-terracotta-500 text-white font-bold shadow-sm'
                         : 'text-white/70 hover:text-white hover:bg-charcoal-800'
-                    }`}
+                      }`}
                   >
                     {step.label}
                   </button>
