@@ -23,3 +23,4 @@ class Scheme(Base):
     )
     documents = relationship("Document", back_populates="scheme")
     evidence_records = relationship("Evidence", back_populates="scheme")
+    chunks = relationship("SchemeChunk", back_populates="scheme", cascade="all, delete-orphan")

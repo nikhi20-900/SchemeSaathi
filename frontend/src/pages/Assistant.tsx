@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Send, Bot, User, Sparkles, Shield, ArrowRight, BookOpen, ExternalLink, HelpCircle } from 'lucide-react';
 import { EvidenceCard } from '../components/EvidenceCard';
+import { queryAssistant } from '../services/api';
 import type { PageId, EvidenceSource, UserProfile } from '../types';
 
 interface AssistantProps {
@@ -140,8 +141,37 @@ export default function Assistant({ onNavigate, userProfile }: AssistantProps) {
     setInput('');
     setIsLoading(true);
 
-    // Simulate grounded retrieval latency
-    setTimeout(() => {
+    try {
+      const data = await queryAssistant(textToSend);
+      let evidence: EvidenceSource | undefined;
+      let matchedSchemeId: string | undefined;
+
+      if (data.sources && data.sources.length > 0) {
+        const topSource = data.sources[0];
+        matchedSchemeId = topSource.scheme_id;
+        evidence = {
+          title: topSource.source_title || topSource.scheme_name,
+          url: topSource.source_url || 'https://www.india.gov.in',
+          quote: topSource.matched_snippet || `${topSource.scheme_name} (${topSource.department})`,
+          scheme_id: topSource.scheme_id,
+        };
+      }
+
+      const assistantMsg: Message = {
+        id: (Date.now() + 1).toString(),
+        sender: 'assistant',
+        text: data.response,
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        evidence,
+        suggestedAction: matchedSchemeId ? {
+          label: 'Evaluate Eligibility for this Scheme',
+          page: 'results',
+        } : undefined,
+      };
+
+      setMessages(prev => [...prev, assistantMsg]);
+    } catch {
+      // Fallback to pre-trained response if backend is unreachable
       const lower = textToSend.toLowerCase();
       let match = PRE_TRAINED_RESPONSES.default;
       if (lower.includes('post-matric') || lower.includes('scholarship') || lower.includes('obc') || lower.includes('ssp')) {
@@ -162,8 +192,9 @@ export default function Assistant({ onNavigate, userProfile }: AssistantProps) {
       };
 
       setMessages(prev => [...prev, assistantMsg]);
+    } finally {
       setIsLoading(false);
-    }, 700);
+    }
   };
 
   return (

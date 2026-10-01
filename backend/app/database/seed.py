@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session, selectinload
 
 from app.database.connection import Base, SessionLocal, engine
 from app.eligibility.scheme_rules import EXAMPLE_SCHEMES
-from app.models import Document, EligibilityRule, Evidence, Scheme, UserProfile
+from app.models import Document, EligibilityRule, Evidence, Scheme, SchemeChunk, UserProfile
 
 
 REQUIRED_DOCUMENTS = {
@@ -108,6 +108,15 @@ def seed_database(db: Session) -> None:
         db.add(UserProfile(**DEFAULT_PROFILE))
 
     db.commit()
+
+    # Seed scheme chunks if scheme_chunks table is empty
+    has_chunks = db.execute(select(SchemeChunk.id).limit(1)).first()
+    if not has_chunks:
+        try:
+            from app.rag.ingestion import ingest_knowledge_base_json
+            ingest_knowledge_base_json(db=db, clear_existing=False)
+        except Exception:
+            pass
 
 
 def init_database() -> None:

@@ -1,24 +1,38 @@
 """
-AI Assistant Query Routes.
+AI Assistant Query Routes backed by RAG and Gemini.
 Owned by: Member 1 & Member 4
 
-Future responsibility:
-Orchestrate User Question -> Query Understanding -> RAG Retrieval ->
-Rules Engine Evaluation -> Grounded Multilingual Explanation.
+Orchestrates Natural Language Query -> RAG Hybrid Retrieval ->
+Grounded Explanation Generation -> Citations Tracking.
+Strictly enforces: The LLM does NOT determine eligibility.
 """
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
+
+from app.database.connection import get_db
+from app.schemas.assistant import AssistantQueryRequest, AssistantQueryResponse
+from app.services.rag_service import RAGService
 
 router = APIRouter(prefix="/assistant", tags=["assistant"])
 
-@router.post("/query")
-def assistant_query(request: dict):
+
+@router.post("/query", response_model=AssistantQueryResponse)
+def assistant_query(
+    request: AssistantQueryRequest,
+    db: Session = Depends(get_db),
+):
     """
-    Placeholder: Natural language query handler.
-    The LLM will NOT determine eligibility.
+    Query the AI Assistant with natural language.
+    Retrieves grounded evidence from official scheme guidelines and
+    generates an answer with verified source citations.
     """
-    return {
-        "message": "Assistant query endpoint placeholder. RAG and multilingual synthesis will be implemented in Phase 2.",
-        "query": request.get("query", ""),
-        "disclaimer": "🔒 The LLM does NOT determine eligibility. Deterministic Rules Engine enforces official government criteria."
-    }
+    result = RAGService.query_assistant(
+        query=request.query,
+        language=request.language or "en",
+        state=request.state,
+        category=request.category,
+        top_k=request.top_k or 4,
+        db=db,
+    )
+    return result
