@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   RotateCcw, 
@@ -13,8 +13,7 @@ import Assistant from './pages/Assistant';
 import Documents from './pages/Documents';
 import Results from './pages/Results';
 import Evidence from './pages/Evidence';
-import { MOCK_PROFILE } from './services/api';
-import { evaluateAllSchemes } from './utils/engine';
+import { checkEligibility, MOCK_PROFILE } from './services/api';
 import type { PageId, UserProfile, SchemeEligibilityResult } from './types';
 
 export const App: React.FC = () => {
@@ -22,20 +21,26 @@ export const App: React.FC = () => {
   const [selectedSchemeId, setSelectedSchemeId] = useState<string>('KA-SCHOLARSHIP-001');
   const [userProfile, setUserProfile] = useState<UserProfile>(MOCK_PROFILE);
   const [isEvaluating, setIsEvaluating] = useState<boolean>(false);
-  const [evaluationResults, setEvaluationResults] = useState<SchemeEligibilityResult[]>(() => {
-    return evaluateAllSchemes(MOCK_PROFILE);
-  });
+  const [evaluationResults, setEvaluationResults] = useState<SchemeEligibilityResult[]>([]);
   const [showDemoBar, setShowDemoBar] = useState<boolean>(true);
 
   // Re-run evaluation whenever userProfile changes
-  const runEvaluation = (profileToEvaluate: UserProfile = userProfile) => {
+  const runEvaluation = async (profileToEvaluate: UserProfile = userProfile) => {
     setIsEvaluating(true);
-    setTimeout(() => {
-      const results = evaluateAllSchemes(profileToEvaluate);
-      setEvaluationResults(results);
+    try {
+      const response = await checkEligibility(profileToEvaluate);
+      setEvaluationResults(response.results || []);
+    } catch (error) {
+      console.error('Eligibility check failed:', error);
+      setEvaluationResults([]);
+    } finally {
       setIsEvaluating(false);
-    }, 400);
+    }
   };
+
+  useEffect(() => {
+    runEvaluation(MOCK_PROFILE);
+  }, []);
 
   const handleNavigate = (page: PageId, data?: any) => {
     if (page === 'scheme-details') {
