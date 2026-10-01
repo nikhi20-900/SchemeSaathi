@@ -9,7 +9,8 @@ from app.services.scheme_service import SchemeService
 router = APIRouter(prefix="/schemes", tags=["schemes"])
 
 
-@router.get("/")
+@router.get("")
+@router.get("/", include_in_schema=False)
 def list_schemes(db: Session = Depends(get_db)):
     schemes = SchemeService.list_schemes(db)
     return {"schemes": schemes, "total": len(schemes)}

@@ -11,7 +11,8 @@ from app.schemas.user import UserProfileCreate, UserProfileResponse
 router = APIRouter(prefix="/profile", tags=["profile"])
 
 
-@router.get("/", response_model=UserProfileResponse)
+@router.get("", response_model=UserProfileResponse)
+@router.get("/", response_model=UserProfileResponse, include_in_schema=False)
 def get_profile(db: Session = Depends(get_db)):
     profile = db.execute(select(UserProfile).order_by(UserProfile.id.asc())).scalar_one_or_none()
     if profile is None:
@@ -22,7 +23,8 @@ def get_profile(db: Session = Depends(get_db)):
     return profile
 
 
-@router.post("/", response_model=UserProfileResponse)
+@router.post("", response_model=UserProfileResponse)
+@router.post("/", response_model=UserProfileResponse, include_in_schema=False)
 def update_profile(profile_data: UserProfileCreate, db: Session = Depends(get_db)):
     profile = db.execute(select(UserProfile).order_by(UserProfile.id.asc())).scalar_one_or_none()
     if profile is None:

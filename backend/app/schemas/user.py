@@ -1,6 +1,6 @@
 """User and profile Pydantic schemas."""
 
-from typing import Optional
+from typing import Optional, Union
 
 from pydantic import BaseModel, ConfigDict
 
@@ -22,6 +22,6 @@ class UserProfileCreate(UserProfileBase):
 
 
 class UserProfileResponse(UserProfileBase):
-    id: Optional[int] = None
+    id: Optional[Union[int, str]] = None
 
     model_config = ConfigDict(from_attributes=True)
