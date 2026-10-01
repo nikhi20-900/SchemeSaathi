@@ -38,8 +38,11 @@ export const App: React.FC = () => {
   };
 
   const handleNavigate = (page: PageId, data?: any) => {
-    if (page === 'scheme-details' && typeof data === 'string') {
-      setSelectedSchemeId(data);
+    if (page === 'scheme-details') {
+      const schemeId = typeof data === 'string' ? data : data?.schemeId;
+      if (typeof schemeId === 'string') {
+        setSelectedSchemeId(schemeId);
+      }
     }
     setActiveTab(page);
     window.scrollTo({ top: 0, behavior: 'smooth' });
