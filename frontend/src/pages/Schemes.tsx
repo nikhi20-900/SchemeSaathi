@@ -105,7 +105,7 @@ export default function Schemes({ onNavigate }: SchemesProps) {
               >
                 <SchemeCard
                   scheme={scheme}
-                  onClick={() => onNavigate('scheme-details', { schemeId: scheme.id })}
+                  onClick={() => onNavigate('scheme-details', scheme.id)}
                 />
               </motion.div>
             ))}
