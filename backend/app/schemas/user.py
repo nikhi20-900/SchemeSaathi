@@ -25,3 +25,5 @@ class UserProfileCreate(UserProfileBase):
 
 class UserProfileResponse(UserProfileBase):
     id: Optional[str] = "user-1"
+
+    model_config = {"from_attributes": True}
