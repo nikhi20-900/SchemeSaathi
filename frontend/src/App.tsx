@@ -13,8 +13,12 @@ import Assistant from './pages/Assistant';
 import Documents from './pages/Documents';
 import Results from './pages/Results';
 import Evidence from './pages/Evidence';
-import { MOCK_PROFILE } from './services/api';
-import { evaluateAllSchemes } from './utils/engine';
+import {
+  checkEligibility,
+  fetchProfile,
+  saveProfile,
+  MOCK_PROFILE,
+} from './services/api';
 import type { PageId, UserProfile, SchemeEligibilityResult } from './types';
 
 export const App: React.FC = () => {
