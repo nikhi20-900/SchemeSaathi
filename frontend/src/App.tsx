@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   RotateCcw, 
@@ -13,7 +13,7 @@ import Assistant from './pages/Assistant';
 import Documents from './pages/Documents';
 import Results from './pages/Results';
 import Evidence from './pages/Evidence';
-import { MOCK_PROFILE } from './services/api';
+import { fetchProfile, MOCK_PROFILE, saveProfile } from './services/api';
 import { evaluateAllSchemes } from './utils/engine';
 import type { PageId, UserProfile, SchemeEligibilityResult } from './types';
 
@@ -26,6 +26,27 @@ export const App: React.FC = () => {
     return evaluateAllSchemes(MOCK_PROFILE);
   });
   const [showDemoBar, setShowDemoBar] = useState<boolean>(true);
+
+  useEffect(() => {
+    let active = true;
+
+    const loadProfile = async () => {
+      try {
+        const profile = await fetchProfile();
+        if (!active) return;
+        setUserProfile(profile);
+        runEvaluation(profile);
+      } catch (error) {
+        console.error('Failed to fetch profile from backend:', error);
+      }
+    };
+
+    loadProfile();
+
+    return () => {
+      active = false;
+    };
+  }, []);
 
   // Re-run evaluation whenever userProfile changes
   const runEvaluation = (profileToEvaluate: UserProfile = userProfile) => {
@@ -48,9 +69,10 @@ export const App: React.FC = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleSaveProfile = (newProfile: UserProfile) => {
-    setUserProfile(newProfile);
-    runEvaluation(newProfile);
+  const handleSaveProfile = async (newProfile: UserProfile) => {
+    const savedProfile = await saveProfile(newProfile);
+    setUserProfile(savedProfile);
+    runEvaluation(savedProfile);
   };
 
   const handleUpdateProfile = (updatedFields: Partial<UserProfile>) => {

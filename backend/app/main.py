@@ -6,6 +6,8 @@ Managed by: Member 4 / Integration
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
+from app.database.connection import Base, engine
+from app.models import UserProfile  # noqa: F401
 
 # Import API Routers
 from app.api.profile import router as profile_router
@@ -37,6 +39,12 @@ app.include_router(assistant_router, prefix=settings.API_V1_STR)
 app.include_router(eligibility_router, prefix=settings.API_V1_STR)
 app.include_router(documents_router, prefix=settings.API_V1_STR)
 app.include_router(demo_router, prefix=settings.API_V1_STR)
+
+
+@app.on_event("startup")
+def on_startup():
+    Base.metadata.create_all(bind=engine)
+
 
 @app.get("/health")
 def health_check():
