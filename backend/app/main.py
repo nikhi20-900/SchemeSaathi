@@ -18,6 +18,9 @@ app = FastAPI(
     description="SchemeSaathi: AI Government Scheme Navigator",
 )
 
+# Ensure tables and baseline records exist for both runtime and tests.
+init_database()
+
 
 @app.on_event("startup")
 def on_startup() -> None:
