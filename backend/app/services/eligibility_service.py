@@ -1,42 +1,19 @@
-"""
-Eligibility Evaluation Service.
-Owned by: Member 2 (Eligibility Engine)
-
-Responsibility:
-- Coordinate deterministic criteria checks between profile and scheme rules
-- Return granular evaluation breakdowns (PASS, FAIL, NEEDS_VERIFICATION)
-- Serve as the bridge between the API layer and the engine
-"""
+"""Eligibility evaluation service."""
 
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from app.eligibility.engine import EligibilityEngine, EligibilityResult
-from app.eligibility.scheme_rules import get_all_schemes, get_scheme_by_id
 
 
 class EligibilityService:
-    """
-    Service layer for eligibility evaluation.
-
-    Coordinates lookups of scheme rules and delegates evaluation
-    to the deterministic EligibilityEngine.
-    """
-
     @staticmethod
     def evaluate_profile_for_scheme(
-        profile: Dict[str, Any],
+        profile: dict[str, Any],
         scheme_id: str,
-    ) -> Dict[str, Any]:
-        """
-        Evaluate a user profile against a single scheme identified by scheme_id.
-
-        Returns:
-            A dict with scheme_id, scheme_name, overall_status, and criteria_results.
-            If the scheme is not found, returns an error dict.
-        """
-        scheme = get_scheme_by_id(scheme_id)
+        scheme: dict[str, Any] | None,
+    ) -> dict[str, Any]:
         if scheme is None:
             return {
                 "scheme_id": scheme_id,
@@ -51,46 +28,38 @@ class EligibilityService:
 
     @staticmethod
     def evaluate_profile_for_all_schemes(
-        profile: Dict[str, Any],
-    ) -> List[Dict[str, Any]]:
-        """
-        Evaluate a user profile against every registered scheme.
-
-        Returns:
-            A list of result dicts, one per scheme.
-        """
-        schemes = get_all_schemes()
-        results: List[EligibilityResult] = EligibilityEngine.evaluate_multiple_schemes(
+        profile: dict[str, Any],
+        schemes: list[dict[str, Any]],
+    ) -> list[dict[str, Any]]:
+        results: list[EligibilityResult] = EligibilityEngine.evaluate_multiple_schemes(
             schemes, profile
         )
-        return [r.to_dict() for r in results]
+        return [result.to_dict() for result in results]
 
     @staticmethod
     def evaluate_profile(
-        profile: Dict[str, Any],
-        scheme_id: Optional[str] = None,
-    ) -> Dict[str, Any]:
-        """
-        Unified entry point.
-
-        If scheme_id is provided, evaluates against that one scheme.
-        Otherwise evaluates against all schemes.
-
-        Returns a structured response dict suitable for the API layer.
-        """
+        profile: dict[str, Any],
+        schemes: list[dict[str, Any]],
+        scheme_id: str | None = None,
+    ) -> dict[str, Any]:
         if scheme_id:
-            result = EligibilityService.evaluate_profile_for_scheme(profile, scheme_id)
-            results_list = [result]
+            scheme = next((item for item in schemes if item["id"].upper() == scheme_id.upper()), None)
+            results_list = [
+                EligibilityService.evaluate_profile_for_scheme(
+                    profile=profile,
+                    scheme_id=scheme_id,
+                    scheme=scheme,
+                )
+            ]
         else:
-            results_list = EligibilityService.evaluate_profile_for_all_schemes(profile)
+            results_list = EligibilityService.evaluate_profile_for_all_schemes(profile, schemes)
 
-        # Build summary
-        eligible = sum(1 for r in results_list if r["overall_status"] == "ELIGIBLE")
+        eligible = sum(1 for result in results_list if result["overall_status"] == "ELIGIBLE")
         partial = sum(
-            1 for r in results_list if r["overall_status"] == "PARTIALLY_ELIGIBLE"
+            1 for result in results_list if result["overall_status"] == "PARTIALLY_ELIGIBLE"
         )
         ineligible = sum(
-            1 for r in results_list if r["overall_status"] == "INELIGIBLE"
+            1 for result in results_list if result["overall_status"] == "INELIGIBLE"
         )
         total = len(results_list)
 

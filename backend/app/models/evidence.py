@@ -1,17 +1,19 @@
-"""
-Evidence Database Model.
-Managed by: Member 1 / AI & Data
+"""Evidence database model."""
 
-Future responsibility:
-SQLAlchemy model representing official evidence records:
-- id
-- scheme_id
-- source_url
-- source_title
-- content
-- page_or_section
-"""
+from sqlalchemy import Column, ForeignKey, Integer, String, Text
+from sqlalchemy.orm import relationship
 
-class Evidence:
-    """Placeholder Evidence model."""
-    pass
+from app.database.connection import Base
+
+
+class Evidence(Base):
+    __tablename__ = "evidence"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    scheme_id = Column(String, ForeignKey("schemes.id", ondelete="CASCADE"), nullable=False, index=True)
+    source_url = Column(String, nullable=True)
+    source_title = Column(String, nullable=True)
+    content = Column(Text, nullable=True)
+    page_or_section = Column(String, nullable=True)
+
+    scheme = relationship("Scheme", back_populates="evidence_records")
