@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 
 # Fallback vector dimension for offline/local deterministic search
 FALLBACK_DIM = 256
-EMBEDDING_MODEL = "text-embedding-004"
+EMBEDDING_MODEL = "gemini-embedding-001"
 
 
 def _deterministic_fallback_embedding(text: str, dim: int = FALLBACK_DIM) -> List[float]:

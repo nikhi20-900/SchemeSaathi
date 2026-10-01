@@ -14,7 +14,7 @@ from app.core.config import settings
 
 logger = logging.getLogger(__name__)
 
-GEMINI_MODEL = "gemini-2.0-flash"
+GEMINI_MODEL = "gemini-2.5-flash"
 
 SYSTEM_INSTRUCTION = """You are SchemeSaathi AI, an authoritative, helpful, and empathetic assistant for Indian government schemes, scholarships, and citizen welfare programs.
 
