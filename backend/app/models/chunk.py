@@ -1,6 +1,6 @@
 """SQLAlchemy model for Scheme Chunks with vector embeddings."""
 
-from datetime import datetime
+from datetime import datetime, timezone
 import json
 from typing import Any, Dict, List, Optional
 from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, Text
@@ -23,7 +23,7 @@ class SchemeChunk(Base):
     content = Column(Text, nullable=False)
     metadata_json = Column(Text, nullable=True)
     embedding_json = Column(Text, nullable=True)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
     # Relationships
     scheme = relationship("Scheme", back_populates="chunks")

@@ -19,7 +19,17 @@ from app.rag.embeddings import (
     generate_embedding,
     generate_embeddings_batch,
 )
-from app.rag.ingestion import extract_text_from_file, ingest_knowledge_base_json
+from app.rag.ingestion import extract_text_from_file, get_ingestion_stats, ingest_knowledge_base_json
+from app.rag.language import (
+    SUPPORTED_LANGUAGES,
+    detect_language,
+    get_disclaimer,
+    get_language_config,
+    get_llm_language_instruction,
+    get_no_results_message,
+    is_language_supported,
+    list_supported_languages,
+)
 from app.rag.retrieval import compute_keyword_overlap, retrieve_relevant_chunks, retrieve_relevant_schemes
 from app.services.llm_service import LLMService
 from app.services.rag_service import DISCLAIMER_TEXT, RAGService
@@ -82,6 +92,12 @@ def test_chunk_document_text_overlap():
         assert len(c) > 0
 
 
+def test_chunk_document_text_empty():
+    """Empty text should produce no chunks."""
+    assert chunk_document_text("") == []
+    assert chunk_document_text("   ") == []
+
+
 def test_chunk_scheme_document():
     """Scheme chunking should inject metadata headers into chunk contents."""
     sample_scheme = {
@@ -131,6 +147,13 @@ def test_generate_embedding_consistency():
     assert len(vec1) > 0
 
 
+def test_generate_embedding_empty():
+    """Empty text should return a zero vector."""
+    vec = generate_embedding("")
+    assert all(v == 0.0 for v in vec)
+    assert len(vec) == FALLBACK_DIM
+
+
 def test_generate_embeddings_batch():
     """Batch embedding generation should return a vector for each text."""
     texts = ["Scheme A", "Scheme B", "Scheme C"]
@@ -138,6 +161,11 @@ def test_generate_embeddings_batch():
     assert len(batch_vecs) == 3
     for v in batch_vecs:
         assert len(v) > 0
+
+
+def test_generate_embeddings_batch_empty():
+    """Empty batch should return empty list."""
+    assert generate_embeddings_batch([]) == []
 
 
 def test_cosine_similarity():
@@ -183,6 +211,18 @@ def test_knowledge_base_json_exists_and_verified():
         assert s["source_url"].startswith("http"), f"Invalid source_url for {s['id']}"
 
 
+def test_knowledge_base_has_30_plus_schemes():
+    """Verify the expanded knowledge base has 30+ schemes."""
+    kb_path = Path("data/schemes/schemes_knowledge_base.json")
+    if not kb_path.exists():
+        kb_path = Path(__file__).resolve().parents[2] / "data" / "schemes" / "schemes_knowledge_base.json"
+
+    with open(kb_path, "r", encoding="utf-8") as f:
+        schemes = json.load(f)
+
+    assert len(schemes) >= 30, f"Expected at least 30 schemes, found {len(schemes)}"
+
+
 def test_extract_text_from_file():
     """Verify plain text extraction from file."""
     guideline_path = Path("data/schemes/karnataka_post_matric_guidelines.txt")
@@ -195,8 +235,91 @@ def test_extract_text_from_file():
         assert "KA-SCHOLARSHIP-001" in text
 
 
+def test_extract_text_from_nonexistent_file():
+    """Non-existent file should return empty string."""
+    text = extract_text_from_file("/nonexistent/file.txt")
+    assert text == ""
+
+
+def test_ingestion_stats(db_session):
+    """Verify ingestion stats returns correct structure."""
+    stats = get_ingestion_stats(db=db_session)
+    assert "total_schemes" in stats
+    assert "total_chunks" in stats
+    assert "total_evidence_records" in stats
+    assert "schemes_by_state" in stats
+    assert "timestamp" in stats
+    assert stats["total_schemes"] > 0
+    assert stats["total_chunks"] > 0
+
+
 # ---------------------------------------------------------------------------
-# 4. Semantic & Hybrid Retrieval Tests
+# 4. Language / i18n Tests
+# ---------------------------------------------------------------------------
+
+def test_supported_languages():
+    """Verify all three languages are supported."""
+    assert "en" in SUPPORTED_LANGUAGES
+    assert "hi" in SUPPORTED_LANGUAGES
+    assert "kn" in SUPPORTED_LANGUAGES
+
+
+def test_get_language_config():
+    """Language config should return valid structure for all supported langs."""
+    for code in ["en", "hi", "kn"]:
+        config = get_language_config(code)
+        assert "name" in config
+        assert "native_name" in config
+        assert "instruction" in config
+        assert "disclaimer" in config
+        assert "no_results" in config
+
+
+def test_get_language_config_fallback():
+    """Unsupported language code should fall back to English."""
+    config = get_language_config("xyz")
+    assert config["name"] == "English"
+
+
+def test_detect_language():
+    """Language detection should work for different scripts."""
+    assert detect_language("What scholarships are available?") == "en"
+    assert detect_language("छात्रवृत्ति के बारे में बताइए") == "hi"
+    assert detect_language("ವಿದ್ಯಾರ್ಥಿವೇತನ ಬಗ್ಗೆ ಮಾಹಿತಿ") == "kn"
+    assert detect_language("") == "en"  # default
+
+
+def test_is_language_supported():
+    """Check language support detection."""
+    assert is_language_supported("en") is True
+    assert is_language_supported("hi") is True
+    assert is_language_supported("kn") is True
+    assert is_language_supported("fr") is False
+
+
+def test_list_supported_languages():
+    """List should contain all supported languages."""
+    langs = list_supported_languages()
+    assert len(langs) >= 3
+    codes = [l["code"] for l in langs]
+    assert "en" in codes
+    assert "hi" in codes
+    assert "kn" in codes
+
+
+def test_get_disclaimer_multilingual():
+    """Disclaimers should exist for each supported language."""
+    en_disc = get_disclaimer("en")
+    hi_disc = get_disclaimer("hi")
+    kn_disc = get_disclaimer("kn")
+    assert "Rules Engine" in en_disc
+    assert len(hi_disc) > 20
+    assert len(kn_disc) > 20
+    assert en_disc != hi_disc  # They should be in different languages
+
+
+# ---------------------------------------------------------------------------
+# 5. Semantic & Hybrid Retrieval Tests
 # ---------------------------------------------------------------------------
 
 def test_retrieve_relevant_chunks(db_session):
@@ -247,8 +370,13 @@ def test_keyword_overlap_computation():
     assert compute_keyword_overlap(q, t1) > compute_keyword_overlap(q, t2)
 
 
+def test_keyword_overlap_empty():
+    """Empty query should return 0."""
+    assert compute_keyword_overlap("", "some text") == 0.0
+
+
 # ---------------------------------------------------------------------------
-# 5. LLM Grounded Prompt & Service Tests
+# 6. LLM Grounded Prompt & Service Tests
 # ---------------------------------------------------------------------------
 
 def test_build_grounded_prompt():
@@ -277,6 +405,36 @@ def test_build_grounded_prompt():
     assert "What is the income limit?" in prompt
 
 
+def test_build_grounded_prompt_with_history():
+    """Verify prompt includes conversation history."""
+    chunks = [
+        {
+            "section_title": "Overview",
+            "content": "PMKVY provides free skill training.",
+            "metadata": {
+                "scheme_name": "PMKVY",
+                "department": "MSDE",
+                "state": "All India",
+                "source_url": "https://www.pmkvyofficial.org/",
+                "source_title": "PMKVY Portal",
+            },
+        }
+    ]
+    history = [
+        {"role": "user", "content": "Tell me about PMKVY"},
+        {"role": "assistant", "content": "PMKVY provides free skill training..."},
+    ]
+    prompt = LLMService.build_grounded_prompt(
+        query="What is the age limit?",
+        context_chunks=chunks,
+        language="en",
+        conversation_history=history,
+    )
+    assert "CONVERSATION HISTORY" in prompt
+    assert "Tell me about PMKVY" in prompt
+    assert "What is the age limit?" in prompt
+
+
 def test_llm_fallback_generation():
     """Verify clean grounded fallback response when API key is offline."""
     chunks = [
@@ -298,8 +456,33 @@ def test_llm_fallback_generation():
     assert "Rules Engine" in resp  # Disclaimer presence
 
 
+def test_llm_fallback_no_chunks():
+    """Fallback with no chunks should return the no-results message."""
+    resp = LLMService._fallback_generate("random query", [])
+    assert "verified" in resp.lower() or "scholarship" in resp.lower() or "official" in resp.lower()
+
+
+def test_llm_fallback_hindi():
+    """Fallback should use Hindi disclaimer for Hindi language."""
+    chunks = [
+        {
+            "scheme_id": "IN-PMKVY-001",
+            "content": "PMKVY provides free skill training.",
+            "metadata": {
+                "scheme_name": "PMKVY",
+                "department": "MSDE",
+                "state": "All India",
+                "source_url": "https://www.pmkvyofficial.org/",
+                "source_title": "PMKVY Portal",
+            },
+        }
+    ]
+    resp = LLMService._fallback_generate("PMKVY ke baare mein batao", chunks, language="hi")
+    assert len(resp) > 20
+
+
 # ---------------------------------------------------------------------------
-# 6. RAG Service & Disclaimer Enforcement Tests
+# 7. RAG Service & Disclaimer Enforcement Tests
 # ---------------------------------------------------------------------------
 
 def test_rag_service_query_assistant(db_session):
@@ -325,6 +508,24 @@ def test_rag_service_query_assistant(db_session):
     assert "relevance_score" in first_source
 
 
+def test_rag_service_with_conversation_history(db_session):
+    """RAG service should accept and process conversation history."""
+    history = [
+        {"role": "user", "content": "Tell me about Karnataka scholarships"},
+        {"role": "assistant", "content": "Karnataka has several scholarship programs..."},
+    ]
+    result = RAGService.query_assistant(
+        query="What documents do I need?",
+        language="en",
+        state="Karnataka",
+        conversation_history=history,
+        db=db_session,
+    )
+    assert "response" in result
+    assert len(result["response"]) > 20
+    assert "sources" in result
+
+
 def test_disclaimer_strictly_enforced(db_session):
     """Ensure the disclaimer that LLM does NOT determine eligibility is always present."""
     result = RAGService.query_assistant("am I eligible for PMKVY?", db=db_session)
@@ -332,7 +533,7 @@ def test_disclaimer_strictly_enforced(db_session):
 
 
 # ---------------------------------------------------------------------------
-# 7. FastAPI API Endpoint Tests (/api/assistant/query)
+# 8. FastAPI API Endpoint Tests (/api/assistant/query)
 # ---------------------------------------------------------------------------
 
 def test_api_assistant_query_success(client):
@@ -367,7 +568,75 @@ def test_api_assistant_query_with_state_filter(client):
     assert len(data["sources"]) > 0
 
 
+def test_api_assistant_query_with_history(client):
+    """Test POST /api/assistant/query with conversation history."""
+    payload = {
+        "query": "What documents do I need?",
+        "language": "en",
+        "conversation_history": [
+            {"role": "user", "content": "Tell me about PMKVY"},
+            {"role": "assistant", "content": "PMKVY provides free skill training..."},
+        ],
+    }
+    response = client.post("/api/assistant/query", json=payload)
+    assert response.status_code == 200
+    data = response.json()
+    assert "response" in data
+
+
 def test_api_assistant_query_short_input_validation(client):
     """Test that query with less than 2 characters is rejected with 422 Unprocessable Entity."""
     response = client.post("/api/assistant/query", json={"query": "a"})
     assert response.status_code == 422
+
+
+# ---------------------------------------------------------------------------
+# 9. Ingestion Management API Tests
+# ---------------------------------------------------------------------------
+
+def test_api_ingestion_status(client):
+    """Test GET /api/assistant/ingestion/status endpoint."""
+    response = client.get("/api/assistant/ingestion/status")
+    assert response.status_code == 200
+    data = response.json()
+    assert "total_schemes" in data
+    assert "total_chunks" in data
+    assert "schemes_by_state" in data
+    assert data["total_schemes"] > 0
+
+
+def test_api_languages(client):
+    """Test GET /api/assistant/languages endpoint."""
+    response = client.get("/api/assistant/languages")
+    assert response.status_code == 200
+    data = response.json()
+    assert "languages" in data
+    codes = [l["code"] for l in data["languages"]]
+    assert "en" in codes
+    assert "hi" in codes
+    assert "kn" in codes
+
+
+# ---------------------------------------------------------------------------
+# 10. PDF Extractor Tests (unit-level, no real PDF needed)
+# ---------------------------------------------------------------------------
+
+def test_pdf_extractor_missing_file():
+    """PDF extractor should handle missing files gracefully."""
+    from app.rag.pdf_extractor import extract_text_from_pdf
+    text = extract_text_from_pdf("/nonexistent/file.pdf")
+    assert text == ""
+
+
+def test_pdf_extractor_non_pdf_file():
+    """PDF extractor should reject non-PDF files."""
+    from app.rag.pdf_extractor import extract_text_from_pdf
+    text = extract_text_from_pdf("/tmp/test.txt")
+    assert text == ""
+
+
+def test_pdf_metadata_missing_file():
+    """PDF metadata extractor should handle missing files."""
+    from app.rag.pdf_extractor import extract_pdf_metadata
+    meta = extract_pdf_metadata("/nonexistent/file.pdf")
+    assert meta == {}
