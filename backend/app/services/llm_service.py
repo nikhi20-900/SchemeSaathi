@@ -5,12 +5,19 @@ Owned by: Member 1 (AI + RAG + Data)
 Provides grounded, citation-backed answers to user queries using Google Gemini,
 strictly enforcing that the LLM does NOT determine eligibility.
 Falls back cleanly to context synthesis when offline or without API key.
+Supports conversation history for follow-up questions.
 """
 
 import logging
 from typing import Any, Dict, List, Optional
 
 from app.core.config import settings
+from app.rag.language import (
+    get_disclaimer,
+    get_language_config,
+    get_llm_language_instruction,
+    get_no_results_message,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -24,6 +31,7 @@ CRITICAL OPERATIONAL RULES & CONSTRAINTS:
 3. CITATION OF SOURCES: Always explicitly reference the scheme name, governing ministry/department, and official portal link from the provided context.
 4. HONEST UNCERTAINTY: If the provided context does not contain the answer, explicitly state that verified guidelines on this point are not available in the current database, and advise the citizen to check the official portal.
 5. MULTILINGUAL SUPPORT: Respond in the requested language (English, Hindi, or Kannada) with natural, respectful phrasing.
+6. FOLLOW-UP AWARENESS: When conversation history is provided, use it to understand the user's ongoing inquiry context and provide coherent follow-up answers.
 """
 
 
@@ -35,8 +43,12 @@ class LLMService:
         query: str,
         context_chunks: List[Dict[str, Any]],
         language: str = "en",
+        conversation_history: Optional[List[Dict[str, str]]] = None,
     ) -> str:
-        """Construct a grounded prompt combining retrieved context and user query."""
+        """
+        Construct a grounded prompt combining retrieved context, conversation
+        history, and user query.
+        """
         context_parts = []
         for i, ch in enumerate(context_chunks, 1):
             meta = ch.get("metadata", {})
@@ -59,15 +71,27 @@ class LLMService:
 
         context_str = "\n".join(context_parts) if context_parts else "No matching scheme context found."
 
-        lang_instruction = {
-            "hi": "Please respond in clear, accessible Hindi (Devanagari script).",
-            "kn": "Please respond in clear, accessible Kannada (Kannada script).",
-            "en": "Please respond in clear, accessible English.",
-        }.get(language.lower(), "Please respond in clear English.")
+        lang_instruction = get_llm_language_instruction(language)
+
+        # Build conversation history section
+        history_str = ""
+        if conversation_history:
+            history_parts = []
+            for msg in conversation_history[-5:]:  # Last 5 turns max
+                role = msg.get("role", "user")
+                content = msg.get("content", "")
+                if content:
+                    history_parts.append(f"{'User' if role == 'user' else 'Assistant'}: {content}")
+            if history_parts:
+                history_str = (
+                    "\nCONVERSATION HISTORY (for follow-up context):\n"
+                    + "\n".join(history_parts)
+                    + "\n"
+                )
 
         prompt = f"""VERIFIED SCHEME CONTEXT:
 {context_str}
-
+{history_str}
 USER QUESTION:
 {query}
 
@@ -92,11 +116,7 @@ INSTRUCTIONS FOR YOUR RESPONSE:
         Ensures the system never breaks and returns fully grounded information.
         """
         if not context_chunks:
-            return (
-                "We could not find any verified government schemes matching your inquiry in the database. "
-                "Please verify your search keywords or visit the National Scholarship Portal (https://scholarships.gov.in/) "
-                "or your State Portal for official information."
-            )
+            return get_no_results_message(language)
 
         # Collect unique schemes
         seen_schemes: Dict[str, Dict[str, Any]] = {}
@@ -114,7 +134,7 @@ INSTRUCTIONS FOR YOUR RESPONSE:
                 }
 
         lines = [
-            f"Here is verified government scheme information matching your inquiry: **\"{query}\"**\n"
+            f'Here is verified government scheme information matching your inquiry: **"{query}"**\n'
         ]
 
         for i, (sid, info) in enumerate(seen_schemes.items(), 1):
@@ -124,10 +144,7 @@ INSTRUCTIONS FOR YOUR RESPONSE:
             lines.append(f"- **Official Portal**: [{info['title']}]({info['url']})")
             lines.append("")
 
-        lines.append(
-            "\n> 🔒 **Official Eligibility Notice**: SchemeSaathi's AI assistant provides informational summaries only. "
-            "Final binding eligibility is deterministically verified using the SchemeSaathi Rules Engine against your official uploaded documentation."
-        )
+        lines.append(f"\n> {get_disclaimer(language)}")
 
         return "\n".join(lines)
 
@@ -137,11 +154,18 @@ INSTRUCTIONS FOR YOUR RESPONSE:
         query: str,
         context_chunks: List[Dict[str, Any]],
         language: str = "en",
+        conversation_history: Optional[List[Dict[str, str]]] = None,
         **kwargs: Any,
     ) -> str:
         """
         Generate a grounded scheme explanation using Gemini API,
         or fall back gracefully to template synthesis if unavailable.
+
+        Args:
+            query: The user's natural-language question.
+            context_chunks: Retrieved scheme chunks with metadata.
+            language: Response language code (en, hi, kn).
+            conversation_history: Optional list of prior conversation turns.
         """
         api_key = settings.GEMINI_API_KEY.strip() if settings.GEMINI_API_KEY else ""
 
@@ -155,7 +179,10 @@ INSTRUCTIONS FOR YOUR RESPONSE:
 
             client = genai.Client(api_key=api_key)
             prompt = cls.build_grounded_prompt(
-                query=query, context_chunks=context_chunks, language=language
+                query=query,
+                context_chunks=context_chunks,
+                language=language,
+                conversation_history=conversation_history,
             )
 
             config = types.GenerateContentConfig(

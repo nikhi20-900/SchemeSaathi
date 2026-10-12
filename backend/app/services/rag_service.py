@@ -4,6 +4,7 @@ Owned by: Member 1 (AI + RAG + Data)
 
 Coordinates semantic retrieval of scheme chunks, context assembly,
 Gemini grounded response synthesis, and official citation tracking.
+Supports conversation history for multi-turn interactions.
 """
 
 import logging
@@ -11,6 +12,7 @@ from typing import Any, Dict, List, Optional
 from sqlalchemy.orm import Session
 
 from app.database.connection import SessionLocal
+from app.rag.language import get_disclaimer
 from app.rag.retrieval import retrieve_relevant_chunks, retrieve_relevant_schemes
 from app.services.llm_service import LLMService
 
@@ -33,13 +35,14 @@ class RAGService:
         state: Optional[str] = None,
         category: Optional[str] = None,
         top_k: int = 4,
+        conversation_history: Optional[List[Dict[str, str]]] = None,
         db: Optional[Session] = None,
     ) -> Dict[str, Any]:
         """
         Full RAG pipeline invocation:
         1. Retrieve top-k relevant scheme chunks based on semantic & keyword similarity.
         2. Format source citations.
-        3. Pass grounded context to Gemini LLMService.
+        3. Pass grounded context to Gemini LLMService (with optional conversation history).
         4. Return synthesized explanation with sources and official disclaimers.
         """
         should_close_db = False
@@ -87,7 +90,13 @@ class RAGService:
                 query=query,
                 context_chunks=chunks,
                 language=language,
+                conversation_history=conversation_history,
             )
+
+            # Use localized disclaimer if not English
+            disclaimer = DISCLAIMER_TEXT
+            if language and language.lower() != "en":
+                disclaimer = get_disclaimer(language)
 
             return {
                 "query": query,
@@ -95,7 +104,7 @@ class RAGService:
                 "response": explanation,
                 "sources": sources,
                 "matched_schemes_count": len(seen_schemes),
-                "disclaimer": DISCLAIMER_TEXT,
+                "disclaimer": disclaimer,
             }
 
         finally:

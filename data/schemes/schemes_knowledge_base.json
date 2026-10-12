@@ -703,5 +703,174 @@
     "source_title": "Maulana Azad National Fellowship Guidelines",
     "source_url": "https://www.ugc.gov.in/",
     "detailed_text": "MINISTRY OF MINORITY AFFAIRS - GOVERNMENT OF INDIA\nMAULANA AZAD NATIONAL FELLOWSHIP FOR MINORITY STUDENTS\n\n1. Scheme Scope: Provides 5-year financial support to minority community researchers to attain doctoral qualifications without financial strain.\n\n2. Emoluments: Equivalent to UGC/CSIR Junior and Senior Research Fellowships, with contingency allowances for research equipment and field travel."
+  },
+  {
+    "id": "IN-NOS-SC-001",
+    "name": "National Overseas Scholarship for SC Students",
+    "department": "Ministry of Social Justice and Empowerment",
+    "state": "All India",
+    "category_target": ["SC", "De-notified Tribes", "Landless Agricultural Labourers", "Traditional Artisans"],
+    "education_level": ["Postgraduate", "PhD", "Post-Doctoral"],
+    "description": "Scholarship for selected Scheduled Caste and other eligible category students for pursuing Masters and Ph.D. level courses abroad in specified fields of study.",
+    "benefits": "Annual maintenance allowance (as per country norms), tuition fees and other charges as per actuals, visa fees, to and fro air passage, contingency and equipment allowance, thesis/dissertation typing and printing charges, and poll tax where applicable.",
+    "eligibility_criteria": [
+      "Candidate must belong to Scheduled Caste or other notified categories (de-notified tribes, landless agricultural labourers, traditional artisans).",
+      "Must have secured admission in a top-500 QS-ranked foreign university for Masters/PhD.",
+      "Total family annual income must not exceed ₹8,00,000 per annum.",
+      "Age must be below 35 years at the time of application.",
+      "Must have completed at least a Bachelor's degree with 55% marks."
+    ],
+    "documents_required": [
+      "Caste Certificate from competent authority",
+      "Income Certificate",
+      "Admission offer letter from foreign university",
+      "Academic transcripts and degree certificates",
+      "Valid passport",
+      "Bank Account details"
+    ],
+    "application_process": "Apply through the National Scholarship Portal (NSP) or directly via the Ministry of Social Justice and Empowerment website during the annual application window.",
+    "source_title": "National Overseas Scholarship - Ministry of Social Justice",
+    "source_url": "https://nosmsje.gov.in/",
+    "detailed_text": "MINISTRY OF SOCIAL JUSTICE AND EMPOWERMENT\nNATIONAL OVERSEAS SCHOLARSHIP FOR SC AND OTHER CATEGORIES\n\n1. Objective: To provide financial assistance to selected students from SC and other specified categories for pursuing higher studies abroad (Masters and PhD) at globally recognized universities.\n\n2. Coverage: 125 fresh awards per year. Covers tuition, maintenance, travel, and research expenses for the full duration of the course."
+  },
+  {
+    "id": "IN-TCE-SC-ST-001",
+    "name": "Top Class Education for SC and ST Students",
+    "department": "Ministry of Social Justice and Empowerment / Ministry of Tribal Affairs",
+    "state": "All India",
+    "category_target": ["SC", "ST"],
+    "education_level": ["Undergraduate", "Postgraduate", "Professional"],
+    "description": "Full financial support for SC and ST students admitted to notified top-class institutions (IITs, IIMs, NITs, AIIMS, NLUs, and other premier institutions) for pursuing undergraduate and postgraduate courses.",
+    "benefits": "Full tuition fee reimbursement, living expenses up to ₹3,000/month, book and stationery allowance of ₹5,000/year, and a one-time computer/laptop purchase allowance of ₹45,000.",
+    "eligibility_criteria": [
+      "Candidate must belong to Scheduled Caste or Scheduled Tribe category.",
+      "Must be admitted to one of the notified premier institutions.",
+      "Total family annual income must not exceed ₹6,00,000 per annum.",
+      "Must maintain satisfactory academic performance each year."
+    ],
+    "documents_required": [
+      "Caste Certificate (SC/ST)",
+      "Income Certificate",
+      "Admission letter from the notified institution",
+      "Academic records",
+      "Aadhaar Card",
+      "Bank Account details (Aadhaar linked)"
+    ],
+    "application_process": "Apply through the National Scholarship Portal (NSP) after securing admission to a notified top-class institution. The institution verifies and forwards the application.",
+    "source_title": "Top Class Education Scheme - Ministry of Social Justice",
+    "source_url": "https://scholarships.gov.in/",
+    "detailed_text": "MINISTRY OF SOCIAL JUSTICE AND EMPOWERMENT\nTOP CLASS EDUCATION FOR SC STUDENTS\n\n1. Objective: Enable meritorious SC/ST students to access the best educational institutions in India without financial barriers.\n\n2. Coverage: Covers all costs including tuition, hostel, books, and essential equipment. Around 3,500 fresh scholarships awarded annually."
+  },
+  {
+    "id": "IN-ISHAN-UDAY-001",
+    "name": "Ishan Uday Special Scholarship Scheme for North Eastern Region",
+    "department": "University Grants Commission (UGC)",
+    "state": "North Eastern States",
+    "category_target": ["All"],
+    "education_level": ["Undergraduate"],
+    "description": "Special scholarship scheme for students from the North Eastern States of India to pursue undergraduate courses in identified institutions across the country.",
+    "benefits": "₹5,400/month for General degree courses and ₹7,800/month for Technical/Professional/Medical courses for the full duration of the undergraduate program.",
+    "eligibility_criteria": [
+      "Student must be a domicile of one of the 8 North Eastern states (Assam, Arunachal Pradesh, Manipur, Meghalaya, Mizoram, Nagaland, Sikkim, Tripura).",
+      "Must be admitted to UGC-recognized institutions for undergraduate courses.",
+      "Total parental/guardian annual income must not exceed ₹4,50,000 per annum.",
+      "Must have passed Class 12 or equivalent examination."
+    ],
+    "documents_required": [
+      "Domicile Certificate of NE State",
+      "Income Certificate",
+      "Class 12 Marks Card",
+      "College Admission Proof",
+      "Aadhaar Card",
+      "Bank Account details"
+    ],
+    "application_process": "Apply through the National Scholarship Portal (NSP). Applications are processed by UGC through the respective state governments.",
+    "source_title": "Ishan Uday - UGC Scholarship for NE Region",
+    "source_url": "https://www.ugc.gov.in/",
+    "detailed_text": "UNIVERSITY GRANTS COMMISSION\nISHAN UDAY SPECIAL SCHOLARSHIP FOR NORTH EASTERN REGION\n\n1. Objective: To encourage students from the North Eastern Region to pursue higher education by providing substantial monthly financial support.\n\n2. Coverage: 10,000 fresh scholarships per year, distributed proportionally among the 8 NE states based on student population."
+  },
+  {
+    "id": "IN-PMRF-001",
+    "name": "Prime Minister's Research Fellowship (PMRF)",
+    "department": "Ministry of Education",
+    "state": "All India",
+    "category_target": ["All"],
+    "education_level": ["PhD"],
+    "description": "Premier fellowship to attract talented students from IITs, IISERs, IISc, NITs, and other CFTIs to pursue doctoral research in cutting-edge science and technology domains at IITs and IISc.",
+    "benefits": "Fellowship of ₹70,000/month for 1st & 2nd year, ₹75,000/month for 3rd year, and ₹80,000/month for 4th & 5th year, plus annual research grant of ₹2,00,000.",
+    "eligibility_criteria": [
+      "Candidate must have completed or be in the final year of B.Tech/BS/Integrated M.Tech from CFTI with CGPA ≥ 8.0/10.",
+      "OR M.Sc. from CFTIs/IISERs with CGPA ≥ 8.0/10.",
+      "OR GATE-qualified candidates with score in top 500 (general) / top 1000 (reserved).",
+      "Must secure admission to PhD program at IIT/IISc.",
+      "Research proposal must be in a nationally relevant science/technology area."
+    ],
+    "documents_required": [
+      "Qualifying degree transcripts with CGPA verification",
+      "GATE scorecard (if applicable)",
+      "PhD admission offer from IIT/IISc",
+      "Research proposal summary",
+      "Category certificate (if applicable)",
+      "Aadhaar and bank details"
+    ],
+    "application_process": "Apply through the PMRF portal (pmrf.in) during biannual application cycles (May and December). Selection through national-level review committee.",
+    "source_title": "Prime Minister's Research Fellowship Portal",
+    "source_url": "https://www.pmrf.in/",
+    "detailed_text": "MINISTRY OF EDUCATION - GOVERNMENT OF INDIA\nPRIME MINISTER'S RESEARCH FELLOWSHIP (PMRF)\n\n1. Objective: Attract the best talent into research by offering a fellowship substantially higher than regular PhD stipends, to work on national priority areas.\n\n2. Duration: Up to 5 years. Fellows are expected to work on frontier areas of science, technology, and social sciences that are of national interest.\n\n3. Additional Benefits: Research grant for equipment, travel, and conference attendance. Mentoring by eminent scientists."
+  },
+  {
+    "id": "IN-SVSGC-001",
+    "name": "Swami Vivekananda Single Girl Child Scholarship for Research in Social Sciences",
+    "department": "University Grants Commission (UGC)",
+    "state": "All India",
+    "category_target": ["All"],
+    "education_level": ["PhD", "MPhil"],
+    "description": "Fellowship for single girl child of the family to pursue research (PhD/MPhil) in Social Sciences to promote women's participation in higher education research.",
+    "benefits": "Fellowship of ₹28,000 to ₹31,000/month for JRF and ₹31,000 to ₹35,000/month for SRF phase, plus HRA and annual contingency grant, for up to 5 years.",
+    "eligibility_criteria": [
+      "Candidate must be the only girl child of the parents (or one of twin daughters).",
+      "Must be enrolled in regular, full-time PhD/MPhil program in Social Sciences at a UGC-recognized university.",
+      "Age must be below 40 years at the time of application.",
+      "Must have qualified UGC-NET JRF or equivalent examination."
+    ],
+    "documents_required": [
+      "Affidavit declaring single girl child status",
+      "UGC-NET JRF Scorecard",
+      "PhD/MPhil Admission Letter",
+      "Birth Certificate",
+      "Aadhaar Card",
+      "Bank Account details"
+    ],
+    "application_process": "Apply through UGC portal when the notification is released annually. University forwards verified applications to UGC for final selection.",
+    "source_title": "Swami Vivekananda Single Girl Child Fellowship - UGC",
+    "source_url": "https://www.ugc.gov.in/",
+    "detailed_text": "UNIVERSITY GRANTS COMMISSION\nSWAMI VIVEKANANDA SINGLE GIRL CHILD SCHOLARSHIP FOR RESEARCH IN SOCIAL SCIENCES\n\n1. Objective: Compensate families who promote education and research of the single girl child in social science disciplines.\n\n2. Coverage: Approximately 100 fresh fellowships per year."
+  },
+  {
+    "id": "IN-DDU-GKY-001",
+    "name": "Deen Dayal Upadhyaya Grameen Kaushalya Yojana (DDU-GKY)",
+    "department": "Ministry of Rural Development",
+    "state": "All India",
+    "category_target": ["SC", "ST", "OBC", "Minority", "Rural Youth"],
+    "education_level": ["School Dropout", "Vocational", "Undergraduate"],
+    "description": "Placement-linked skill training program for rural youth from poor families, providing free training, certification, and guaranteed placement with minimum CTC of ₹6,000/month or above.",
+    "benefits": "100% free skill training (576 to 2,304 hours), free boarding and lodging during training, post-placement support for 12 months, salary guarantee of ₹6,000/month minimum, and transportation to workplace.",
+    "eligibility_criteria": [
+      "Rural youth aged 15 to 35 years (up to 45 years for women and vulnerable groups).",
+      "Must belong to a rural household covered under SECC 2011 or identified by Gram Sabha.",
+      "Priority for SC/ST (50%), Minority (15%), Women (33%).",
+      "Must possess valid Aadhaar card."
+    ],
+    "documents_required": [
+      "Aadhaar Card",
+      "Proof of rural domicile",
+      "SECC 2011 family ID or Gram Sabha identification letter",
+      "Age proof",
+      "Bank Account details (Aadhaar linked)"
+    ],
+    "application_process": "Enroll through Project Implementing Agencies (PIAs) or at the nearest DDU-GKY center. Registration available via ddugky.gov.in or Jan Seva Kendra.",
+    "source_title": "DDU-GKY Official Guidelines - Ministry of Rural Development",
+    "source_url": "https://ddugky.gov.in/",
+    "detailed_text": "MINISTRY OF RURAL DEVELOPMENT\nDEEN DAYAL UPADHYAYA GRAMEEN KAUSHALYA YOJANA (DDU-GKY)\n\n1. Objective: Transform rural poor youth into economically independent, globally relevant workforce by providing demand-driven skills training with guaranteed placement.\n\n2. Key Features: Minimum 70% placement rate mandated for all training programs. Post-placement tracking for 12 months. Priority training in sectors with high employment demand."
   }
 ]
