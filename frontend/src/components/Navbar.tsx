@@ -1,6 +1,5 @@
 import React from 'react';
-import { Shield, Menu, X } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { Menu, X } from 'lucide-react';
 import type { PageId } from '../types';
 
 interface NavbarProps {
@@ -10,104 +9,104 @@ interface NavbarProps {
 
 const NAV_ITEMS: { id: PageId; label: string }[] = [
   { id: 'home', label: 'Home' },
-  { id: 'profile', label: 'Profile' },
-  { id: 'schemes', label: 'Schemes' },
-  { id: 'assistant', label: 'AI Assistant' },
-  { id: 'results', label: 'Eligibility' },
-  { id: 'documents', label: 'Documents' },
-  { id: 'evidence', label: 'Evidence' },
+  { id: 'schemes', label: 'Find schemes' },
+  { id: 'results', label: 'Check eligibility' },
+  { id: 'assistant', label: 'Ask a question' },
+  { id: 'profile', label: 'My details' },
 ];
 
 export const Navbar: React.FC<NavbarProps> = ({ activeTab, onSelectTab }) => {
   const [mobileOpen, setMobileOpen] = React.useState(false);
 
+  React.useEffect(() => {
+    setMobileOpen(false);
+  }, [activeTab]);
+
+  React.useEffect(() => {
+    if (!mobileOpen) return;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setMobileOpen(false);
+    };
+    window.addEventListener('keydown', closeOnEscape);
+    return () => window.removeEventListener('keydown', closeOnEscape);
+  }, [mobileOpen]);
+
+  const isActive = (tab: PageId) => activeTab === tab || (tab === 'schemes' && activeTab === 'scheme-details');
+  const selectTab = (tab: PageId) => {
+    onSelectTab(tab);
+    setMobileOpen(false);
+  };
+
   return (
-    <>
-      {/* Top header bar */}
-      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-linen-300">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-14">
-            {/* Logo */}
-            <button
-              onClick={() => onSelectTab('home')}
-              className="flex items-center gap-2 hover:opacity-80 transition-opacity"
-            >
-              <div className="w-8 h-8 rounded-lg bg-charcoal-800 flex items-center justify-center">
-                <span className="text-white font-bold text-sm">SS</span>
-              </div>
-              <span className="font-bold text-lg text-charcoal-900">
-                Scheme<span className="text-terracotta-500">Saathi</span>
-              </span>
-            </button>
-
-            {/* Desktop nav */}
-            <nav className="hidden md:flex items-center gap-1">
-              {NAV_ITEMS.map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => onSelectTab(item.id)}
-                  className={`relative px-3 py-1.5 rounded-md text-sm font-medium transition-all duration-200
-                    ${activeTab === item.id
-                      ? 'text-charcoal-900'
-                      : 'text-charcoal-700/60 hover:text-charcoal-800 hover:bg-linen-100'
-                    }`}
-                >
-                  {item.label}
-                  {activeTab === item.id && (
-                    <motion.div
-                      layoutId="nav-indicator"
-                      className="absolute bottom-0 left-2 right-2 h-0.5 bg-terracotta-500 rounded-full"
-                      transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-                    />
-                  )}
-                </button>
-              ))}
-            </nav>
-
-            {/* Civic badge + mobile menu */}
-            <div className="flex items-center gap-3">
-              <div className="hidden sm:flex items-center gap-1.5 text-[10px] font-semibold text-sage-600 bg-sage-50 px-2.5 py-1 rounded-full border border-sage-200">
-                <Shield className="w-3 h-3" />
-                <span>Deterministic Engine</span>
-              </div>
-              <button
-                onClick={() => setMobileOpen(!mobileOpen)}
-                className="md:hidden p-2 rounded-lg hover:bg-linen-100 transition-colors"
-              >
-                {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-              </button>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      {/* Mobile nav drawer */}
-      <AnimatePresence>
-        {mobileOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-white border-b border-linen-300 overflow-hidden z-40 relative"
+    <header className="sticky top-0 z-50 border-b border-slate-200 bg-white">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex min-h-[4.5rem] items-center justify-between gap-4">
+          <button
+            type="button"
+            onClick={() => selectTab('home')}
+            aria-label="SchemeSaathi home"
+            className="flex min-h-11 shrink-0 items-center gap-3 rounded-sm focus-visible:outline"
           >
-            <nav className="px-4 py-3 space-y-1">
-              {NAV_ITEMS.map((item) => (
+            <span aria-hidden="true" className="flex h-9 w-9 items-center justify-center rounded-md bg-blue-900 text-sm font-bold text-white">SS</span>
+            <span className="text-left">
+              <span className="block text-lg font-bold leading-tight tracking-tight text-slate-900">
+                Scheme<span className="text-blue-800">Saathi</span>
+              </span>
+              <span className="hidden text-xs leading-tight text-slate-600 sm:block">Government scheme guide</span>
+            </span>
+          </button>
+
+          <nav aria-label="Main navigation" className="hidden items-center gap-1 lg:flex">
+            {NAV_ITEMS.map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => selectTab(item.id)}
+                aria-current={isActive(item.id) ? 'page' : undefined}
+                className={`min-h-11 rounded-md px-3 text-sm font-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-700 focus-visible:outline-offset-2 ${isActive(item.id)
+                  ? 'bg-blue-50 text-blue-900'
+                  : 'text-slate-700 hover:bg-slate-100 hover:text-slate-950'
+                }`}
+              >
+                {item.label}
+              </button>
+            ))}
+          </nav>
+
+          <button
+            type="button"
+            onClick={() => setMobileOpen((open) => !open)}
+            aria-expanded={mobileOpen}
+            aria-controls="mobile-navigation"
+            aria-label={mobileOpen ? 'Close navigation menu' : 'Open navigation menu'}
+            className="inline-flex h-11 w-11 items-center justify-center rounded-md text-slate-800 hover:bg-slate-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-700 focus-visible:outline-offset-2 lg:hidden"
+          >
+            {mobileOpen ? <X aria-hidden="true" className="h-5 w-5" /> : <Menu aria-hidden="true" className="h-5 w-5" />}
+          </button>
+        </div>
+      </div>
+
+      {mobileOpen && (
+        <nav id="mobile-navigation" aria-label="Main navigation" className="border-t border-slate-200 bg-white px-4 py-3 lg:hidden">
+          <ul className="mx-auto max-w-7xl space-y-1">
+            {NAV_ITEMS.map((item) => (
+              <li key={item.id}>
                 <button
-                  key={item.id}
-                  onClick={() => { onSelectTab(item.id); setMobileOpen(false); }}
-                  className={`w-full text-left px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
-                    ${activeTab === item.id
-                      ? 'bg-linen-200 text-charcoal-900'
-                      : 'text-charcoal-700/60 hover:bg-linen-100'
-                    }`}
+                  type="button"
+                  onClick={() => selectTab(item.id)}
+                  aria-current={isActive(item.id) ? 'page' : undefined}
+                  className={`min-h-11 w-full rounded-md px-3 py-2 text-left text-sm font-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-700 focus-visible:outline-offset-2 ${isActive(item.id)
+                    ? 'bg-blue-50 text-blue-900'
+                    : 'text-slate-700 hover:bg-slate-100 hover:text-slate-950'
+                  }`}
                 >
                   {item.label}
                 </button>
-              ))}
-            </nav>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      )}
+    </header>
   );
 };

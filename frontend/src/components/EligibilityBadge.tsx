@@ -6,34 +6,34 @@ const VERDICT_CONFIG: Record<CriterionVerdict, { icon: React.ReactNode; classes:
   PASS: {
     icon: <CheckCircle className="w-3.5 h-3.5" />,
     classes: 'bg-sage-50 text-sage-700 border-sage-200',
-    label: 'Pass',
+    label: 'Meets requirement',
   },
   FAIL: {
     icon: <XCircle className="w-3.5 h-3.5" />,
     classes: 'bg-red-50 text-red-700 border-red-200',
-    label: 'Fail',
+    label: 'Does not meet',
   },
   NEEDS_VERIFICATION: {
     icon: <AlertTriangle className="w-3.5 h-3.5" />,
     classes: 'bg-saffron-50 text-saffron-600 border-saffron-100',
-    label: 'Verify',
+    label: 'Check needed',
   },
 };
 
 const STATUS_CONFIG: Record<OverallStatus | 'ERROR', { classes: string; label: string; dot: string }> = {
   ELIGIBLE: {
     classes: 'bg-sage-50 text-sage-700 border-sage-200',
-    label: 'Eligible',
+    label: 'Likely eligible',
     dot: 'bg-sage-500',
   },
   INELIGIBLE: {
     classes: 'bg-red-50 text-red-700 border-red-200',
-    label: 'Ineligible',
+    label: 'May not qualify',
     dot: 'bg-red-500',
   },
   PARTIALLY_ELIGIBLE: {
     classes: 'bg-saffron-50 text-saffron-600 border-saffron-100',
-    label: 'Partially Eligible',
+    label: 'More information needed',
     dot: 'bg-saffron-500',
   },
   ERROR: {

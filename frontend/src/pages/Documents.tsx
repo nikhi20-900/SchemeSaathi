@@ -14,7 +14,6 @@ import {
   CheckCircle2,
   AlertTriangle
 } from 'lucide-react';
-import { LoadingState } from '../components/LoadingState';
 import type { UserProfile, PageId } from '../types';
 
 interface DocumentsProps {
@@ -57,7 +56,7 @@ const SAMPLE_DOCUMENTS: DemoSampleDoc[] = [
     certificateNo: 'RD00389182910/2024',
     date: '15-Jan-2024',
     status: 'VERIFIED',
-    summary: 'Citizen is verified as a bona fide permanent resident of Karnataka for >7 years. Fully satisfies Karnataka SSP post-matric domicile criterion.',
+    summary: 'Example: the document lists Karnataka residence for 12 years, which matches the sample requirement of 7 years.',
     fields: [
       { label: 'Applicant Name', extracted: 'Nikhil Kumar', profileValue: 'Nikhil Kumar', confidence: 99, match: true },
       { label: 'Domicile State', extracted: 'Karnataka', profileValue: 'Karnataka', confidence: 98, match: true },
@@ -67,7 +66,7 @@ const SAMPLE_DOCUMENTS: DemoSampleDoc[] = [
     unlockRule: {
       field: 'domicile_certificate',
       value: true,
-      label: 'Resolves Domicile Certificate requirement for Karnataka Post-Matric Scholarship to PASS',
+      label: 'In this example, the residence detail matches the sample scheme requirement.',
     },
   },
   {
@@ -79,7 +78,7 @@ const SAMPLE_DOCUMENTS: DemoSampleDoc[] = [
     certificateNo: 'INC-2024-918274',
     date: '02-Feb-2024',
     status: 'VERIFIED',
-    summary: 'Family income verified at ₹2,40,000 per annum, matching declared profile data.',
+    summary: 'Example: the listed household income matches the sample profile amount.',
     fields: [
       { label: 'Applicant Name', extracted: 'Nikhil Kumar', profileValue: 'Nikhil Kumar', confidence: 99, match: true },
       { label: 'Annual Income', extracted: '₹2,40,000', profileValue: '₹2,40,000', confidence: 97, match: true },
@@ -88,7 +87,7 @@ const SAMPLE_DOCUMENTS: DemoSampleDoc[] = [
     unlockRule: {
       field: 'income_verified',
       value: true,
-      label: 'Certifies income below ₹2,50,000 threshold',
+      label: 'In this example, the income is below the sample scheme limit.',
     },
   },
   {
@@ -100,7 +99,7 @@ const SAMPLE_DOCUMENTS: DemoSampleDoc[] = [
     certificateNo: 'CST-2A-884920',
     date: '10-Nov-2023',
     status: 'VERIFIED',
-    summary: 'Category 2A (OBC) verified against Karnataka state gazette reservation matrix.',
+    summary: 'Example: the listed category matches the sample profile.',
     fields: [
       { label: 'Applicant Name', extracted: 'Nikhil Kumar', profileValue: 'Nikhil Kumar', confidence: 98, match: true },
       { label: 'Category', extracted: 'Category 2A (OBC)', profileValue: '2A', confidence: 96, match: true },
@@ -109,7 +108,7 @@ const SAMPLE_DOCUMENTS: DemoSampleDoc[] = [
     unlockRule: {
       field: 'caste_verified',
       value: true,
-      label: 'Certifies Category 2A OBC status',
+      label: 'In this example, the category matches the sample requirement.',
     },
   },
   {
@@ -130,7 +129,7 @@ const SAMPLE_DOCUMENTS: DemoSampleDoc[] = [
     unlockRule: {
       field: 'income_mismatch',
       value: true,
-      label: 'Demonstrates automated fraud detection and discrepancy flag',
+      label: 'This example shows how a difference between document and profile details is highlighted.',
     },
   },
 ];
@@ -141,49 +140,11 @@ export default function Documents({
   onNavigate,
 }: DocumentsProps) {
   const [selectedDoc, setSelectedDoc] = useState<DemoSampleDoc | null>(SAMPLE_DOCUMENTS[0]);
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [processingStage, setProcessingStage] = useState(0);
-  const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
   const [appliedSuccessfully, setAppliedSuccessfully] = useState(false);
 
-  const simulateOCR = (doc: DemoSampleDoc) => {
-    setIsProcessing(true);
-    setProcessingStage(0);
-    setSelectedDoc(null);
+  const showExample = (doc: DemoSampleDoc) => {
+    setSelectedDoc(doc);
     setAppliedSuccessfully(false);
-
-    // Stage 1
-    setTimeout(() => {
-      setProcessingStage(1);
-    }, 400);
-
-    // Stage 2
-    setTimeout(() => {
-      setProcessingStage(2);
-    }, 800);
-
-    // Stage 3
-    setTimeout(() => {
-      setProcessingStage(3);
-    }, 1200);
-
-    // Final
-    setTimeout(() => {
-      setIsProcessing(false);
-      setSelectedDoc(doc);
-    }, 1500);
-  };
-
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setUploadedFileName(file.name);
-      // Run OCR on the Domicile sample by default for uploaded files
-      simulateOCR({
-        ...SAMPLE_DOCUMENTS[0],
-        name: file.name,
-      });
-    }
   };
 
   const handleApplyToProfile = () => {
@@ -210,17 +171,17 @@ export default function Documents({
           <div className="w-8 h-8 rounded-lg bg-sage-100 flex items-center justify-center text-sage-600">
             <Scan className="w-4 h-4" />
           </div>
-          <h1 className="text-2xl font-bold text-charcoal-900">Document Intelligence & OCR Verification</h1>
+          <h1 className="text-2xl font-bold text-charcoal-900">Your documents</h1>
         </div>
         <p className="text-sm text-charcoal-700/60">
-          Upload certificates or choose from official demo samples to verify eligibility criteria against gazetted rules.
+          Open an example to see how document details can be compared with your profile. Real certificate checks are not available in this preview.
         </p>
 
         {/* Civic Banner */}
         <div className="mt-3 flex items-center gap-2 p-3 bg-linen-200 border border-linen-300 rounded-lg text-xs text-charcoal-800">
           <ShieldCheck className="w-4 h-4 text-sage-600 flex-shrink-0" />
           <span>
-            <strong>Deterministic Verification:</strong> Extracted fields are cross-referenced with your citizen profile using strict cryptographic and mathematical comparisons to eliminate verification backlog.
+            <strong>Preview only:</strong> The examples below use sample information. Real documents are not uploaded, read, or verified here.
           </span>
         </div>
       </div>
@@ -232,41 +193,28 @@ export default function Documents({
           <div className="w-12 h-12 rounded-xl bg-linen-200 flex items-center justify-center text-charcoal-700 mb-3">
             <Upload className="w-6 h-6" />
           </div>
-          <h3 className="text-sm font-bold text-charcoal-900 mb-1">Upload Certificate</h3>
+          <h3 className="text-sm font-bold text-charcoal-900 mb-1">Real document checks</h3>
           <p className="text-xs text-charcoal-700/60 mb-4">
-            Supports PDF, JPG, or PNG up to 10MB
+            Upload and verification are not available in this preview. Choose an example to see how a check is presented.
           </p>
-          <label className="btn-secondary text-xs cursor-pointer py-2 px-4">
-            <span>Browse Files</span>
-            <input
-              type="file"
-              accept=".pdf,.jpg,.jpeg,.png"
-              onChange={handleFileUpload}
-              className="hidden"
-            />
-          </label>
-          {uploadedFileName && (
-            <p className="text-[11px] text-sage-600 font-medium mt-2 truncate max-w-full">
-              Selected: {uploadedFileName}
-            </p>
-          )}
+          <span className="rounded-md border border-slate-300 px-3 py-2 text-xs font-medium text-slate-600">Not available in preview</span>
         </div>
 
-        {/* 1-Click Demo Samples */}
+        {/* Example documents */}
         <div className="md:col-span-2 civic-card rounded-2xl p-6">
           <div className="flex items-center justify-between mb-3">
             <p className="section-label flex items-center gap-1.5">
               <Sparkles className="w-3.5 h-3.5 text-terracotta-500" />
-              1-Click Demo Verification Samples
+              Example documents
             </p>
-            <span className="text-[10px] text-charcoal-700/50">Instant OCR Test</span>
+              <span className="text-xs text-charcoal-700/60">Sample information only</span>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {SAMPLE_DOCUMENTS.map((doc) => (
               <button
                 key={doc.id}
-                onClick={() => simulateOCR(doc)}
+                onClick={() => showExample(doc)}
                 className={`p-3 rounded-xl border text-left transition-all ${
                   selectedDoc?.id === doc.id
                     ? 'border-terracotta-500 bg-terracotta-100/20 shadow-sm'
@@ -284,12 +232,12 @@ export default function Documents({
                         : 'bg-red-50 text-red-600'
                     }`}
                   >
-                    {doc.status}
+                    {doc.status === 'VERIFIED' ? 'Example match' : 'Example difference'}
                   </span>
                 </div>
                 <p className="text-[11px] text-charcoal-700/60 line-clamp-1">{doc.type}</p>
                 <span className="text-[10px] text-terracotta-600 font-semibold mt-1 inline-block">
-                  Run OCR Analysis →
+                  Review example →
                 </span>
               </button>
             ))}
@@ -297,24 +245,8 @@ export default function Documents({
         </div>
       </div>
 
-      {/* Processing State */}
-      {isProcessing && (
-        <div className="civic-card rounded-2xl p-8 mb-8">
-          <LoadingState
-            message="Running Document Intelligence OCR Pipeline…"
-            steps={[
-              'Preprocessing document image & deskewing',
-              'Running Tesseract OCR & Layout Detection',
-              'Extracting key-value certificate fields',
-              'Cross-referencing with citizen profile criteria',
-            ]}
-            currentStep={processingStage}
-          />
-        </div>
-      )}
-
-      {/* Document Verification Inspection View */}
-      {selectedDoc && !isProcessing && (
+      {/* Example document preview */}
+      {selectedDoc && (
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
@@ -340,10 +272,11 @@ export default function Documents({
                     ) : (
                       <AlertCircle className="w-3.5 h-3.5" />
                     )}
-                    {selectedDoc.status}
+                    {selectedDoc.status === 'VERIFIED' ? 'Example match' : 'Example difference'}
                   </span>
                 </div>
 
+                <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-blue-800">Example document preview</p>
                 <h3 className="text-lg font-bold text-charcoal-900">{selectedDoc.name}</h3>
                 <p className="text-xs text-charcoal-700/60 mt-0.5">
                   Issuing Authority: {selectedDoc.authority} · Issued on: {selectedDoc.date}
@@ -357,12 +290,12 @@ export default function Documents({
                     onClick={handleApplyToProfile}
                     className="inline-flex items-center gap-1.5 text-xs font-semibold px-4 py-2.5 rounded-lg bg-terracotta-500 text-white hover:bg-terracotta-600 transition-colors shadow-sm"
                   >
-                    <span>Apply to Profile & Re-evaluate</span>
+                    <span>Use these details and check again</span>
                     <ArrowRight className="w-3.5 h-3.5" />
                   </button>
                   {appliedSuccessfully && (
                     <span className="text-[11px] text-sage-600 font-semibold mt-1">
-                      ✓ Profile Updated! Re-evaluating schemes…
+                      ✓ Details updated. Checking schemes…
                     </span>
                   )}
                 </div>
@@ -371,7 +304,7 @@ export default function Documents({
 
             {/* Summary */}
             <div className="mt-4 p-3 rounded-xl bg-linen-100 border border-linen-200 text-xs text-charcoal-800">
-              <span className="font-bold">Verification Finding: </span>
+              <span className="font-bold">Example result: </span>
               {selectedDoc.summary}
             </div>
           </div>
@@ -379,7 +312,7 @@ export default function Documents({
           {/* Extracted Fields Table */}
           <div className="p-6 bg-linen-50/50">
             <h4 className="text-xs font-bold uppercase tracking-wider text-charcoal-700/60 mb-3">
-              Extracted OCR Fields & Citizen Profile Match
+              Details read from the document
             </h4>
 
             <div className="overflow-x-auto">
@@ -387,10 +320,10 @@ export default function Documents({
                 <thead>
                   <tr className="border-b border-linen-300 text-charcoal-700/60">
                     <th className="py-2.5 font-bold">Field Name</th>
-                    <th className="py-2.5 font-bold">Extracted Document Value</th>
-                    <th className="py-2.5 font-bold">Profile Value</th>
-                    <th className="py-2.5 font-bold text-center">Confidence</th>
-                    <th className="py-2.5 font-bold text-right">Verification</th>
+                    <th className="py-2.5 font-bold">Document value</th>
+                    <th className="py-2.5 font-bold">Your profile</th>
+                    <th className="py-2.5 font-bold text-center">Reading accuracy</th>
+                    <th className="py-2.5 font-bold text-right">Comparison</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-linen-200">
@@ -437,7 +370,7 @@ export default function Documents({
                 onClick={handleApplyToProfile}
                 className="btn-primary text-xs py-1.5 px-3 flex-shrink-0"
               >
-                Apply & View Eligibility
+                Use example and view results
               </button>
             </div>
           </div>
