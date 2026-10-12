@@ -1,122 +1,77 @@
 import React from 'react';
-import { motion } from 'framer-motion';
-import { Search, Shield, FileCheck, Brain, ArrowRight, Sparkles } from 'lucide-react';
+import { ArrowRight, FileCheck2, Search, UserRound } from 'lucide-react';
 import type { PageId } from '../types';
 
 interface HomeProps {
   onNavigate: (page: PageId) => void;
 }
 
+const STEPS = [
+  {
+    title: 'Add your details',
+    description: 'Share only the information needed to compare your situation with scheme requirements.',
+    icon: <UserRound aria-hidden="true" className="h-5 w-5" />,
+  },
+  {
+    title: 'Review possible matches',
+    description: 'See which requirements appear to fit and which ones need more information.',
+    icon: <Search aria-hidden="true" className="h-5 w-5" />,
+  },
+  {
+    title: 'Prepare to apply',
+    description: 'Check the documents and official sources before continuing with the scheme authority.',
+    icon: <FileCheck2 aria-hidden="true" className="h-5 w-5" />,
+  },
+];
+
 export default function Home({ onNavigate }: HomeProps) {
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6">
-      {/* Hero */}
-      <motion.section
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="text-center py-16 sm:py-24"
-      >
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-sage-50 border border-sage-200 text-sage-700 text-xs font-semibold mb-6">
-          <Shield className="w-3.5 h-3.5" />
-          Deterministic Eligibility · No AI Guesswork
-        </div>
-
-        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-charcoal-900 tracking-tight leading-[1.1]">
-          Navigate Government
-          <br />
-          Schemes with{' '}
-          <span className="text-terracotta-500">Confidence</span>
+    <div className="mx-auto max-w-6xl px-4 sm:px-6">
+      <section aria-labelledby="home-title" className="border-b border-slate-200 py-10 sm:py-14">
+        <p className="mb-3 text-sm font-semibold text-blue-900">Government schemes, made easier to understand</p>
+        <h1 id="home-title" className="max-w-3xl text-3xl font-bold leading-tight tracking-tight text-slate-950 sm:text-4xl">
+          Find support you may qualify for
         </h1>
-
-        <p className="mt-5 text-lg text-charcoal-700/70 max-w-2xl mx-auto leading-relaxed">
-          SchemeSaathi evaluates your eligibility against official government criteria using
-          a deterministic rules engine — not AI predictions. Every result is backed by
-          evidence from gazetted sources.
+        <p className="mt-4 max-w-3xl text-base leading-7 text-slate-700 sm:text-lg">
+          SchemeSaathi helps you explore government schemes in Karnataka and across India, compare published eligibility requirements with your details, and understand what you may need to apply.
         </p>
 
-        <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
-          <button onClick={() => onNavigate('profile')} className="btn-primary text-base px-8 py-3">
-            Set Up Your Profile
-            <ArrowRight className="w-4 h-4" />
+        <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+          <button onClick={() => onNavigate('profile')} className="btn-primary w-full sm:w-auto">
+            Check possible eligibility <ArrowRight aria-hidden="true" className="h-4 w-4" />
           </button>
-          <button onClick={() => onNavigate('schemes')} className="btn-secondary text-base px-8 py-3">
-            Browse Schemes
+          <button onClick={() => onNavigate('schemes')} className="btn-secondary w-full sm:w-auto">
+            Browse schemes
           </button>
         </div>
-      </motion.section>
 
-      {/* How it works */}
-      <section className="py-12">
-        <h2 className="section-label text-center mb-8">How SchemeSaathi Works</h2>
-
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          {[
-            {
-              icon: <Search className="w-5 h-5" />,
-              title: 'Set Your Profile',
-              desc: 'Enter your age, state, education, income, and category.',
-              color: 'bg-sage-50 text-sage-600',
-            },
-            {
-              icon: <Brain className="w-5 h-5" />,
-              title: 'Ask the AI',
-              desc: 'Ask questions in natural language. AI retrieves from official sources.',
-              color: 'bg-terracotta-100 text-terracotta-600',
-            },
-            {
-              icon: <Shield className="w-5 h-5" />,
-              title: 'Rules Engine',
-              desc: 'Deterministic evaluation: PASS, FAIL, or NEEDS_VERIFICATION per criterion.',
-              color: 'bg-saffron-50 text-saffron-600',
-            },
-            {
-              icon: <FileCheck className="w-5 h-5" />,
-              title: 'Verify Documents',
-              desc: 'Upload documents for OCR extraction and profile matching.',
-              color: 'bg-linen-200 text-charcoal-700',
-            },
-          ].map((step, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 * i, duration: 0.4 }}
-              className="civic-card rounded-xl p-5 text-center"
-            >
-              <div className={`w-10 h-10 rounded-xl ${step.color} flex items-center justify-center mx-auto mb-3`}>
-                {step.icon}
-              </div>
-              <h3 className="font-semibold text-sm text-charcoal-900 mb-1">{step.title}</h3>
-              <p className="text-xs text-charcoal-700/60 leading-relaxed">{step.desc}</p>
-            </motion.div>
-          ))}
-        </div>
+        <p className="mt-5 max-w-3xl text-sm leading-6 text-slate-600">
+          SchemeSaathi provides guidance; it does not submit applications or guarantee approval. Confirm current requirements with the official scheme authority.
+        </p>
       </section>
 
-      {/* Quick demo CTA */}
-      <motion.section
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.5 }}
-        className="py-12"
-      >
-        <div className="civic-card rounded-2xl p-8 sm:p-10 text-center bg-charcoal-800 border-charcoal-700">
-          <Sparkles className="w-6 h-6 text-saffron-500 mx-auto mb-4" />
-          <h2 className="text-xl font-bold text-white mb-2">Try the Demo Flow</h2>
-          <p className="text-sm text-white/60 mb-6 max-w-md mx-auto">
-            See how a sample profile (Age: 20, Karnataka, BCA, ₹2,40,000) is evaluated
-            against real government scheme criteria.
-          </p>
-          <button
-            onClick={() => onNavigate('results')}
-            className="btn-terracotta text-base px-8 py-3"
-          >
-            Run Eligibility Check
-            <ArrowRight className="w-4 h-4" />
-          </button>
+      <section aria-labelledby="how-it-works" className="py-9 sm:py-11">
+        <div className="max-w-2xl">
+          <p className="section-label mb-2">Using SchemeSaathi</p>
+          <h2 id="how-it-works" className="text-2xl font-bold tracking-tight text-slate-950">What happens next</h2>
+          <p className="mt-2 text-sm leading-6 text-slate-700">You stay in control at every step. Review information before deciding whether to apply.</p>
         </div>
-      </motion.section>
+
+        <ol className="mt-6 grid grid-cols-1 divide-y divide-slate-200 border-y border-slate-200 md:grid-cols-3 md:divide-x md:divide-y-0">
+          {STEPS.map((step, index) => (
+            <li key={step.title} className="flex gap-4 py-5 md:px-5 md:first:pl-0 md:last:pr-0">
+              <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-blue-50 text-blue-900">
+                {step.icon}
+              </span>
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wide text-blue-900">Step {index + 1}</p>
+                <h3 className="mt-1 font-semibold text-slate-950">{step.title}</h3>
+                <p className="mt-1 text-sm leading-6 text-slate-700">{step.description}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </section>
     </div>
   );
 }

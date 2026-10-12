@@ -51,9 +51,9 @@ export default function Profile({ profile, onSave, onNavigate }: ProfileProps) {
   return (
     <div className="max-w-2xl mx-auto px-4 sm:px-6 py-8">
       <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
-        <h1 className="text-2xl font-bold text-charcoal-900 mb-1">Citizen Profile</h1>
-        <p className="text-sm text-charcoal-700/60 mb-8">
-          Your profile is evaluated deterministically against scheme eligibility criteria.
+        <h1 className="text-2xl font-bold text-charcoal-900 mb-1">Your details</h1>
+        <p className="text-sm text-charcoal-700/70 mb-8">
+          Add or update the information you want to use when checking scheme requirements. You can change these details at any time.
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -64,8 +64,9 @@ export default function Profile({ profile, onSave, onNavigate }: ProfileProps) {
             </legend>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-3">
               <div>
-                <label className="block text-xs font-medium text-charcoal-800 mb-1">Full Name</label>
+                <label htmlFor="profile-name" className="block text-xs font-medium text-charcoal-800 mb-1">Full name</label>
                 <input
+                  id="profile-name"
                   type="text"
                   value={form.name}
                   onChange={e => handleChange('name', e.target.value)}
@@ -74,8 +75,9 @@ export default function Profile({ profile, onSave, onNavigate }: ProfileProps) {
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-charcoal-800 mb-1">Age</label>
+                <label htmlFor="profile-age" className="block text-xs font-medium text-charcoal-800 mb-1">Age</label>
                 <input
+                  id="profile-age"
                   type="number"
                   value={form.age}
                   onChange={e => handleChange('age', parseInt(e.target.value) || 0)}
@@ -85,8 +87,9 @@ export default function Profile({ profile, onSave, onNavigate }: ProfileProps) {
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-charcoal-800 mb-1">Category</label>
+                <label htmlFor="profile-category" className="block text-xs font-medium text-charcoal-800 mb-1">Social category (if applicable)</label>
                 <select
+                  id="profile-category"
                   value={form.category}
                   onChange={e => handleChange('category', e.target.value)}
                   className="select-field"
@@ -95,8 +98,9 @@ export default function Profile({ profile, onSave, onNavigate }: ProfileProps) {
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-medium text-charcoal-800 mb-1">Student</label>
+                <label htmlFor="profile-student" className="block text-xs font-medium text-charcoal-800 mb-1">Are you currently a student?</label>
                 <select
+                  id="profile-student"
                   value={form.student_status ? 'yes' : 'no'}
                   onChange={e => handleChange('student_status', e.target.value === 'yes')}
                   className="select-field"
@@ -115,8 +119,9 @@ export default function Profile({ profile, onSave, onNavigate }: ProfileProps) {
             </legend>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-3">
               <div>
-                <label className="block text-xs font-medium text-charcoal-800 mb-1">State</label>
+                <label htmlFor="profile-state" className="block text-xs font-medium text-charcoal-800 mb-1">State</label>
                 <select
+                  id="profile-state"
                   value={form.state}
                   onChange={e => handleChange('state', e.target.value)}
                   className="select-field"
@@ -125,8 +130,9 @@ export default function Profile({ profile, onSave, onNavigate }: ProfileProps) {
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-medium text-charcoal-800 mb-1">District</label>
+                <label htmlFor="profile-district" className="block text-xs font-medium text-charcoal-800 mb-1">District</label>
                 <input
+                  id="profile-district"
                   type="text"
                   value={form.district || ''}
                   onChange={e => handleChange('district', e.target.value)}
@@ -144,8 +150,9 @@ export default function Profile({ profile, onSave, onNavigate }: ProfileProps) {
             </legend>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-3">
               <div>
-                <label className="block text-xs font-medium text-charcoal-800 mb-1">Education Level</label>
+                <label htmlFor="profile-education" className="block text-xs font-medium text-charcoal-800 mb-1">Highest education level</label>
                 <select
+                  id="profile-education"
                   value={form.education}
                   onChange={e => handleChange('education', e.target.value)}
                   className="select-field"
@@ -154,8 +161,9 @@ export default function Profile({ profile, onSave, onNavigate }: ProfileProps) {
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-medium text-charcoal-800 mb-1">Course</label>
+                <label htmlFor="profile-course" className="block text-xs font-medium text-charcoal-800 mb-1">Course or field of study</label>
                 <input
+                  id="profile-course"
                   type="text"
                   value={form.course}
                   onChange={e => handleChange('course', e.target.value)}
@@ -172,8 +180,9 @@ export default function Profile({ profile, onSave, onNavigate }: ProfileProps) {
               <IndianRupee className="w-3.5 h-3.5" /> Financial Information
             </legend>
             <div className="mt-3">
-              <label className="block text-xs font-medium text-charcoal-800 mb-1">Annual Family Income (₹)</label>
+              <label htmlFor="profile-income" className="block text-xs font-medium text-charcoal-800 mb-1">Approximate annual household income (₹)</label>
               <input
+                id="profile-income"
                 type="number"
                 value={form.annual_income}
                 onChange={e => handleChange('annual_income', parseFloat(e.target.value) || 0)}
@@ -181,7 +190,7 @@ export default function Profile({ profile, onSave, onNavigate }: ProfileProps) {
                 min={0}
                 step={1000}
               />
-              <p className="text-xs text-charcoal-700/40 mt-1">
+              <p className="text-xs text-charcoal-700/60 mt-1">
                 ₹{form.annual_income.toLocaleString('en-IN')} per year
               </p>
             </div>
@@ -191,14 +200,14 @@ export default function Profile({ profile, onSave, onNavigate }: ProfileProps) {
           <div className="flex items-center gap-3">
             <button type="submit" className="btn-primary">
               <Save className="w-4 h-4" />
-              Save Profile
+              Save my details
             </button>
             <button
               type="button"
               onClick={() => onNavigate('results')}
               className="btn-terracotta"
             >
-              Check Eligibility
+              See possible matches
             </button>
             {saved && (
               <motion.span

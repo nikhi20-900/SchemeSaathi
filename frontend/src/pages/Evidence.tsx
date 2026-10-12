@@ -125,17 +125,17 @@ export default function Evidence({ onNavigate }: EvidenceProps) {
           <div className="w-8 h-8 rounded-lg bg-saffron-100 flex items-center justify-center text-saffron-600">
             <FileCheck className="w-4 h-4" />
           </div>
-          <h1 className="text-2xl font-bold text-charcoal-900">Official Evidence & Source Registry</h1>
+          <h1 className="text-2xl font-bold text-charcoal-900">Scheme sources</h1>
         </div>
         <p className="text-sm text-charcoal-700/60">
-          Every eligibility rule in SchemeSaathi is legally grounded in official gazettes, government orders (G.O.), and department portal guidelines.
+          Review the government notices and department pages used to explain scheme requirements. Open the original source to confirm the latest information.
         </p>
 
         {/* Audit Transparency Badge */}
         <div className="mt-3 flex items-center gap-2 p-3 bg-sage-50 border border-sage-200 rounded-lg text-xs text-sage-700">
           <Shield className="w-4 h-4 text-sage-600 flex-shrink-0" />
           <span>
-            <strong>Deterministic Grounding:</strong> No arbitrary criteria. Each rule maps 1-to-1 with signed gazette orders and tamper-evident cryptographic hashes.
+            Sources are provided to help you check where scheme information comes from. Availability and dates can vary by scheme.
           </span>
         </div>
       </div>
@@ -208,7 +208,7 @@ export default function Evidence({ onNavigate }: EvidenceProps) {
               {/* Key Rules Enforced Deterministically */}
               <div>
                 <p className="text-[11px] font-bold uppercase tracking-wider text-charcoal-700/50 mb-2">
-                  Enforced Deterministic Rules
+                  Eligibility requirements
                 </p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   {ev.keyRules.map((rule, idx) => (

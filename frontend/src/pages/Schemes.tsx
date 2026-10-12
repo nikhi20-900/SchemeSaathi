@@ -52,9 +52,9 @@ export default function Schemes({ onNavigate }: SchemesProps) {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
       <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
-        <h1 className="text-2xl font-bold text-charcoal-900 mb-1">Government Schemes</h1>
-        <p className="text-sm text-charcoal-700/60 mb-6">
-          Browse verified Karnataka SSP and Central Government schemes with structured eligibility criteria.
+        <h1 className="text-2xl font-bold text-charcoal-900 mb-1">Find schemes</h1>
+        <p className="text-sm text-charcoal-700/70 mb-6">
+          Browse Karnataka and central government schemes. Search by scheme name, purpose, or department, then open a scheme to review its requirements and source.
         </p>
 
         {/* Search & Filter */}
@@ -65,7 +65,8 @@ export default function Schemes({ onNavigate }: SchemesProps) {
               type="text"
               value={search}
               onChange={e => setSearch(e.target.value)}
-              placeholder="Search schemes by name, department…"
+              aria-label="Search schemes by name, purpose, or department"
+              placeholder="Search schemes by name, purpose, or department"
               className="input-field pl-10"
             />
           </div>
@@ -74,6 +75,7 @@ export default function Schemes({ onNavigate }: SchemesProps) {
             <select
               value={stateFilter}
               onChange={e => setStateFilter(e.target.value)}
+              aria-label="Filter schemes by state"
               className="select-field pl-10 pr-8"
             >
               {states.map(s => (
@@ -84,7 +86,7 @@ export default function Schemes({ onNavigate }: SchemesProps) {
         </div>
 
         {/* Results count */}
-        <p className="text-xs text-charcoal-700/50 mb-4">
+        <p aria-live="polite" className="text-sm text-charcoal-700/70 mb-4">
           {filtered.length} scheme{filtered.length !== 1 ? 's' : ''} found
         </p>
 

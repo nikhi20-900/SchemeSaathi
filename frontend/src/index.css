@@ -3,139 +3,124 @@
 @tailwind utilities;
 
 :root {
+  color-scheme: light;
   font-family: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
 }
 
 body {
   margin: 0;
+  min-width: 320px;
   min-height: 100vh;
-  background-color: #FAF9F6;
-  color: #181E1B;
+  background-color: #F7F8FA;
+  color: #182230;
 }
 
-/* Custom subtle scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-::-webkit-scrollbar-track {
-  background: #F4F1EC;
-}
-::-webkit-scrollbar-thumb {
-  background: #DDD6C9;
-  border-radius: 3px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #C8BFAF;
+button,
+input,
+select,
+textarea {
+  font: inherit;
 }
 
-/* ─── Civic Design System ─────────────────────────────── */
+button {
+  touch-action: manipulation;
+}
 
+:focus-visible {
+  outline: 3px solid #1D4ED8;
+  outline-offset: 3px;
+}
+
+::selection {
+  background: #DBEAFE;
+  color: #172554;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: #F1F3F6; }
+::-webkit-scrollbar-thumb { background: #C8D0DB; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #AAB5C3; }
+
+/* Shared service portal styles */
 .civic-card {
   background: #FFFFFF;
-  border: 1px solid #EAE5DC;
-  box-shadow: 0 1px 3px 0 rgba(24, 30, 27, 0.04), 0 1px 2px 0 rgba(24, 30, 27, 0.02);
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid #DCE2EA;
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05);
+  transition: border-color 160ms ease, box-shadow 160ms ease;
 }
 
 .civic-card:hover {
-  border-color: #DDD6C9;
-  box-shadow: 0 4px 12px -2px rgba(24, 30, 27, 0.08), 0 2px 4px -2px rgba(24, 30, 27, 0.04);
+  border-color: #B8C4D3;
+  box-shadow: 0 3px 10px rgba(16, 24, 40, 0.07);
 }
 
-/* Status colors */
-.status-pass {
-  @apply bg-sage-50 text-sage-700 border-sage-200;
-}
+.status-pass { @apply bg-sage-50 text-sage-700 border-sage-200; }
+.status-fail { @apply bg-red-50 text-red-700 border-red-200; }
+.status-needs-verification { @apply bg-saffron-50 text-saffron-600 border-saffron-100; }
+.status-eligible { @apply bg-sage-50 border-sage-200; }
+.status-ineligible { @apply bg-red-50 border-red-200; }
+.status-partial { @apply bg-saffron-50 border-saffron-100; }
 
-.status-fail {
-  @apply bg-red-50 text-red-700 border-red-200;
-}
-
-.status-needs-verification {
-  @apply bg-saffron-50 text-saffron-600 border-saffron-100;
-}
-
-.status-eligible {
-  @apply bg-sage-50 border-sage-200;
-}
-
-.status-ineligible {
-  @apply bg-red-50 border-red-200;
-}
-
-.status-partial {
-  @apply bg-saffron-50 border-saffron-100;
-}
-
-/* Buttons */
 .btn-primary {
-  @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg font-semibold text-sm
-    bg-charcoal-800 text-white hover:bg-charcoal-700 
-    transition-all duration-200 ease-out
-    focus:outline-none focus:ring-2 focus:ring-charcoal-800 focus:ring-offset-2;
+  @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-md px-5 py-2.5 text-sm font-semibold
+    bg-blue-800 text-white hover:bg-blue-900
+    focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-700 focus-visible:ring-offset-2;
 }
 
 .btn-secondary {
-  @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg font-semibold text-sm
-    bg-white text-charcoal-800 border border-linen-300 
-    hover:bg-linen-100 hover:border-linen-400
-    transition-all duration-200 ease-out
-    focus:outline-none focus:ring-2 focus:ring-charcoal-800 focus:ring-offset-2;
+  @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-md border border-slate-300 bg-white px-5 py-2.5
+    text-sm font-semibold text-slate-800 hover:bg-slate-50 hover:border-slate-400
+    focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-700 focus-visible:ring-offset-2;
 }
 
 .btn-terracotta {
-  @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg font-semibold text-sm
-    bg-terracotta-500 text-white hover:bg-terracotta-600 
-    transition-all duration-200 ease-out
-    focus:outline-none focus:ring-2 focus:ring-terracotta-500 focus:ring-offset-2;
+  @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-md px-5 py-2.5 text-sm font-semibold
+    bg-terracotta-600 text-white hover:bg-terracotta-700
+    focus:outline-none focus-visible:ring-2 focus-visible:ring-terracotta-700 focus-visible:ring-offset-2;
 }
 
-/* Form inputs */
 .input-field {
-  @apply w-full px-4 py-2.5 rounded-lg border border-linen-300 bg-white text-charcoal-900
-    placeholder-charcoal-700/40
-    focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-sage-500
-    transition-all duration-200;
+  @apply w-full rounded-md border border-slate-300 bg-white px-4 py-3 text-slate-900 placeholder-slate-500
+    focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-700 focus-visible:border-blue-700;
 }
 
 .select-field {
-  @apply w-full px-4 py-2.5 rounded-lg border border-linen-300 bg-white text-charcoal-900
-    focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-sage-500
-    transition-all duration-200 appearance-none;
+  @apply w-full appearance-none rounded-md border border-slate-300 bg-white px-4 py-3 text-slate-900
+    focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-700 focus-visible:border-blue-700;
 }
 
-/* Section headers */
-.section-label {
-  @apply text-[11px] font-bold uppercase tracking-[0.08em] text-charcoal-700/60;
-}
+.section-label { @apply text-xs font-bold uppercase tracking-wide text-slate-600; }
+.civic-badge { @apply inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-xs font-semibold; }
 
-/* Badge */
-.civic-badge {
-  @apply inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-bold rounded-full border;
-}
-
-/* Animated gradient border */
 @keyframes shimmer {
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
 }
-
 .loading-shimmer {
-  background: linear-gradient(90deg, #F4F1EC 25%, #EAE5DC 50%, #F4F1EC 75%);
+  background: linear-gradient(90deg, #F1F3F6 25%, #E2E7EE 50%, #F1F3F6 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s ease-in-out infinite;
 }
 
-/* Pulse dot */
 @keyframes pulse-dot {
   0%, 80%, 100% { opacity: 0; transform: scale(0.6); }
   40% { opacity: 1; transform: scale(1); }
 }
-
-.typing-dot {
-  animation: pulse-dot 1.4s infinite ease-in-out both;
-}
+.typing-dot { animation: pulse-dot 1.4s infinite ease-in-out both; }
 .typing-dot:nth-child(1) { animation-delay: 0s; }
 .typing-dot:nth-child(2) { animation-delay: 0.2s; }
 .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

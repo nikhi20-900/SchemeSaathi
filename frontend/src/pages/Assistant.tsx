@@ -53,7 +53,7 @@ Your current profile matches age, state, education, and category, but requires a
       scheme_id: 'KA-SCHOLARSHIP-001',
     },
     action: {
-      label: 'Evaluate Eligibility for this Scheme',
+      label: 'See possible matches',
       page: 'results',
     },
   },
@@ -91,16 +91,16 @@ Key criteria:
       scheme_id: 'IN-PMAY-001',
     },
     action: {
-      label: 'Check PMAY-G Eligibility',
+      label: 'Check possible matches',
       page: 'results',
     },
   },
   'default': {
-    text: `SchemeSaathi's AI assistant searches gazetted government scheme criteria. While I can summarize guidelines and clarify terminology, all final eligibility evaluations are performed by our deterministic rules engine — ensuring zero hallucinations or incorrect guarantees.`,
+    text: `I can help explain scheme information, but my answers may be incomplete or out of date. Check the linked source and confirm current requirements with the official scheme authority.`,
     evidence: {
-      title: 'SchemeSaathi Deterministic Governance Architecture Rulebook',
+      title: 'How SchemeSaathi presents eligibility information',
       url: 'https://github.com/nikhi20-900/SchemeSaathi',
-      quote: 'The LLM does NOT make final eligibility determinations. Deterministic rule evaluation guarantees transparency and legal verifiability.',
+      quote: 'SchemeSaathi can help you understand possible matches. The relevant scheme authority makes the final decision.',
     },
     action: {
       label: 'View All Available Schemes',
@@ -114,12 +114,12 @@ export default function Assistant({ onNavigate, userProfile }: AssistantProps) {
     {
       id: 'welcome',
       sender: 'assistant',
-      text: `Namaste, ${userProfile.name || 'Citizen'}! I am SchemeSaathi's AI Navigator. You can ask me questions about government scholarships, welfare schemes, income limits, or required documents in plain language.`,
+      text: `Hello${userProfile.name ? `, ${userProfile.name}` : ''}. Ask me about government schemes, eligibility requirements, or documents. I’ll include source information when it is available.`,
       timestamp: 'Just now',
       evidence: {
         title: 'Gazette of India & Karnataka State Welfare Notifications',
         url: 'https://karnataka.gov.in',
-        quote: 'All criteria evaluated deterministically against gazetted welfare eligibility frameworks.',
+        quote: 'Check current requirements with the official scheme authority before applying.',
       },
     },
   ]);
@@ -205,17 +205,17 @@ export default function Assistant({ onNavigate, userProfile }: AssistantProps) {
           <div className="w-8 h-8 rounded-lg bg-terracotta-100 flex items-center justify-center text-terracotta-600">
             <Sparkles className="w-4 h-4" />
           </div>
-          <h1 className="text-2xl font-bold text-charcoal-900">AI Scheme Navigator</h1>
+          <h1 className="text-2xl font-bold text-charcoal-900">Ask a question</h1>
         </div>
-        <p className="text-sm text-charcoal-700/60">
-          Ask questions in natural language. Powered by retrieval-augmented generation grounded in official gazette notifications.
+        <p className="text-sm text-charcoal-700/70">
+          Ask about a scheme, its requirements, or the documents you may need. Answers can be incomplete, so check the linked source and confirm details with the scheme authority.
         </p>
 
         {/* Civic Safeguard Banner */}
         <div className="mt-3 flex items-center gap-2 p-3 bg-sage-50 border border-sage-200 rounded-lg text-xs text-sage-700">
           <Shield className="w-4 h-4 text-sage-600 flex-shrink-0" />
           <span>
-            <strong>Deterministic Safeguard:</strong> The AI helps you understand scheme rules and find relevant programs. Official eligibility determinations are computed with mathematical accuracy by our rules engine.
+            SchemeSaathi can help explain possible matches. The government department responsible for the scheme makes the final eligibility decision.
           </span>
         </div>
       </div>
@@ -223,7 +223,7 @@ export default function Assistant({ onNavigate, userProfile }: AssistantProps) {
       {/* Suggested Quick Prompts */}
       <div className="mb-6">
         <p className="section-label mb-2 flex items-center gap-1.5">
-          <HelpCircle className="w-3.5 h-3.5" /> Suggested Inquiries
+          <HelpCircle className="w-3.5 h-3.5" /> Questions to get you started
         </p>
         <div className="flex flex-wrap gap-2">
           {SAMPLE_QUESTIONS.map((q, idx) => (
